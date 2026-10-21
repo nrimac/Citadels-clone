@@ -1,0 +1,12 @@
+# One-click deploy blueprint for Render (https://render.com).
+services:
+  - type: web
+    name: citadels
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
