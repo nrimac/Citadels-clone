@@ -16,7 +16,7 @@ const CHORDS = {
 // D dorian, two octaves for the recorder.
 const SCALE = ['D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6', 'D6', 'E6'];
 
-const MOODS = {
+export const MOODS = {
   menu: {
     bpm: 64,
     progression: ['Dm', 'Dm', 'C', 'C', 'G', 'G', 'Dm', 'Am'],

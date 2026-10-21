@@ -29,8 +29,6 @@ export function computeResult(state) {
     tiebreak: state.lastRanks?.[seat] ?? 0,
     gold: state.players[seat].gold,
   }));
-  const standings = [...scores]
-    .sort((a, b) => b.total - a.total || b.tiebreak - a.tiebreak || b.gold - a.gold)
-    .map((s) => s.seat);
+  const standings = [...scores].sort((a, b) => b.total - a.total || b.tiebreak - a.tiebreak || b.gold - a.gold).map((s) => s.seat);
   return { scores, standings, winner: standings[0] };
 }

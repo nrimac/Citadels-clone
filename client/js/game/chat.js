@@ -23,11 +23,24 @@ export function chatPanel({ onSend }) {
     }
     e.stopPropagation();
   });
-  const sendBtn = h('button', { class: 'icon-btn', type: 'button', title: 'Send', onclick: () => {
-    send(input.value);
-    input.value = '';
-  } }, icon('chat'));
-  const quick = h('div', { class: 'chat-quick' }, QUICK.map((q) => h('button', { type: 'button', onclick: () => send(q) }, q)));
+  const sendBtn = h(
+    'button',
+    {
+      class: 'icon-btn',
+      type: 'button',
+      title: 'Send',
+      onclick: () => {
+        send(input.value);
+        input.value = '';
+      },
+    },
+    icon('chat'),
+  );
+  const quick = h(
+    'div',
+    { class: 'chat-quick' },
+    QUICK.map((q) => h('button', { type: 'button', onclick: () => send(q) }, q)),
+  );
   const el = h('div', { class: 'chat' }, list, quick, h('div', { class: 'chat-compose' }, input, sendBtn));
 
   let rendered = 0;

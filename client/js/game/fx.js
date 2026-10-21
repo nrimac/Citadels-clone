@@ -61,7 +61,16 @@ export class FX {
     const jobs = [];
     for (let i = 0; i < n; i++) {
       const el = h('div', { class: 'fx-coin', html: coinSVG() });
-      jobs.push(this.fly(el, from, to, { duration: 620 + i * 25, delay: delay + i * 85, arc: 70 + Math.random() * 50, rotate: 360, scaleFrom: 0.9, scaleTo: 0.75 }));
+      jobs.push(
+        this.fly(el, from, to, {
+          duration: 620 + i * 25,
+          delay: delay + i * 85,
+          arc: 70 + Math.random() * 50,
+          rotate: 360,
+          scaleFrom: 0.9,
+          scaleTo: 0.75,
+        }),
+      );
     }
     return Promise.all(jobs);
   }
@@ -71,7 +80,16 @@ export class FX {
     const jobs = [];
     for (let i = 0; i < n; i++) {
       const el = h('div', { class: 'fx-card', style: { width: `${width}px`, height: `${width * 1.4}px` }, html: cardBackSVG() });
-      jobs.push(this.fly(el, from, to, { duration: 560, delay: delay + i * 110, arc: 50, rotate: -12 + Math.random() * 24, scaleFrom: 1, scaleTo: 0.6 }));
+      jobs.push(
+        this.fly(el, from, to, {
+          duration: 560,
+          delay: delay + i * 110,
+          arc: 50,
+          rotate: -12 + Math.random() * 24,
+          scaleFrom: 1,
+          scaleTo: 0.6,
+        }),
+      );
     }
     return Promise.all(jobs);
   }
@@ -92,14 +110,25 @@ export class FX {
     for (let i = 0; i < count; i++) {
       const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
       const dist = spread * (0.5 + Math.random() * 0.6);
-      const p = this._spawn(h('div', { class: 'fx-spark', style: { background: color, width: `${size}px`, height: `${size}px`, left: `${c.x}px`, top: `${c.y}px` } }));
+      const p = this._spawn(
+        h('div', {
+          class: 'fx-spark',
+          style: { background: color, width: `${size}px`, height: `${size}px`, left: `${c.x}px`, top: `${c.y}px` },
+        }),
+      );
       p.animate(
         [
           { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
-          { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px)) scale(0.2)`, opacity: 0 },
+          {
+            transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px)) scale(0.2)`,
+            opacity: 0,
+          },
         ],
         { duration: 600 + Math.random() * 400, easing: 'cubic-bezier(.2,.8,.3,1)' },
-      ).finished.then(() => p.remove(), () => p.remove());
+      ).finished.then(
+        () => p.remove(),
+        () => p.remove(),
+      );
     }
   }
 
@@ -116,7 +145,10 @@ export class FX {
           { transform: `translate(calc(-50% + ${dx}px), calc(-50% - ${20 + Math.random() * 30}px)) scale(1.6)`, opacity: 0 },
         ],
         { duration: 900 + Math.random() * 400, easing: 'ease-out' },
-      ).finished.then(() => p.remove(), () => p.remove());
+      ).finished.then(
+        () => p.remove(),
+        () => p.remove(),
+      );
     }
   }
 
@@ -131,17 +163,28 @@ export class FX {
         const piece = this._spawn(
           h('div', {
             class: 'fx-rubble',
-            style: { left: `${rect.left + c * w}px`, top: `${rect.top + r * hgt}px`, width: `${w + 1}px`, height: `${hgt + 1}px`, background: color },
+            style: {
+              left: `${rect.left + c * w}px`,
+              top: `${rect.top + r * hgt}px`,
+              width: `${w + 1}px`,
+              height: `${hgt + 1}px`,
+              background: color,
+            },
           }),
         );
         const dx = (c - cols / 2 + Math.random()) * 18;
-        piece.animate(
-          [
-            { transform: 'translate(0,0) rotate(0)', opacity: 1 },
-            { transform: `translate(${dx}px, ${120 + Math.random() * 80}px) rotate(${(Math.random() - 0.5) * 180}deg)`, opacity: 0 },
-          ],
-          { duration: 900 + Math.random() * 500, delay: (rows - r) * 40, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'both' },
-        ).finished.then(() => piece.remove(), () => piece.remove());
+        piece
+          .animate(
+            [
+              { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+              { transform: `translate(${dx}px, ${120 + Math.random() * 80}px) rotate(${(Math.random() - 0.5) * 180}deg)`, opacity: 0 },
+            ],
+            { duration: 900 + Math.random() * 500, delay: (rows - r) * 40, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'both' },
+          )
+          .finished.then(
+            () => piece.remove(),
+            () => piece.remove(),
+          );
       }
     }
     this.dust(rect);
@@ -150,7 +193,13 @@ export class FX {
   shake(el) {
     if (!this.enabled || !el) return;
     el.animate(
-      [{ transform: 'translateX(0)' }, { transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(0)' }],
+      [
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-5px)' },
+        { transform: 'translateX(5px)' },
+        { transform: 'translateX(-3px)' },
+        { transform: 'translateX(0)' },
+      ],
       { duration: 380, easing: 'ease-in-out' },
     );
   }
@@ -180,7 +229,10 @@ export class FX {
           { transform: `translate(${(Math.random() - 0.5) * 30}vw, 110vh) rotate(${(Math.random() - 0.5) * 1080}deg)`, opacity: 0.9 },
         ],
         { duration: 2600 + Math.random() * 2200, delay: Math.random() * 1200, easing: 'cubic-bezier(.25,.4,.6,1)', fill: 'both' },
-      ).finished.then(() => el.remove(), () => el.remove());
+      ).finished.then(
+        () => el.remove(),
+        () => el.remove(),
+      );
     }
   }
 

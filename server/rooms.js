@@ -7,14 +7,7 @@ import crypto from 'node:crypto';
 import { GameHost } from '../shared/host/GameHost.js';
 import { pickBotName } from '../shared/bots/index.js';
 import { getEdition } from '../shared/content/index.js';
-import {
-  BOT_LEVEL_CHOICES,
-  ROOM_CODE_ALPHABET,
-  ROOM_CODE_LENGTH,
-  S,
-  sanitizeName,
-  sanitizeSettings,
-} from '../shared/protocol.js';
+import { BOT_LEVEL_CHOICES, ROOM_CODE_ALPHABET, ROOM_CODE_LENGTH, S, sanitizeName, sanitizeSettings } from '../shared/protocol.js';
 
 const EDITION = getEdition('classic');
 export const MAX_SEATS = EDITION.maxPlayers;
@@ -158,8 +151,8 @@ export class Room {
   }
 
   reassignHost() {
-    const next = this.seats.find((s) => s.kind === 'human' && !s.left && s.connected) ??
-      this.seats.find((s) => s.kind === 'human' && !s.left);
+    const next =
+      this.seats.find((s) => s.kind === 'human' && !s.left && s.connected) ?? this.seats.find((s) => s.kind === 'human' && !s.left);
     this.hostSeatId = next?.id ?? null;
   }
 

@@ -9,7 +9,7 @@ import { cardValue, characterValue, cityIds, defOf, threat } from './evaluate.js
 export const BOT_LEVELS = {
   easy: { label: 'Squire', noise: 3.0, inference: false, destroyBias: -1.5 },
   normal: { label: 'Knight', noise: 1.0, inference: true, destroyBias: 0 },
-  hard: { label: 'Lord', noise: 0.25, inference: true, destroyBias: 0.5 },
+  hard: { label: 'Lord', noise: 0.4, inference: true, destroyBias: 0.5, aware: true },
 };
 
 const best = (items, score) => {
@@ -237,9 +237,7 @@ function turnAction(ctx) {
   if (!view.turn.actionTaken) return chooseResourceAction(ctx);
 
   if (t.income) {
-    const incomeSuitBuildable = view.hand.some(
-      (c) => t.build.includes(c.uid) && (defOf(c).suit === t.income.suit || defOf(c).wildIncome),
-    );
+    const incomeSuitBuildable = view.hand.some((c) => t.build.includes(c.uid) && (defOf(c).suit === t.income.suit || defOf(c).wildIncome));
     if (!incomeSuitBuildable) return { type: 'income' };
   }
 
@@ -275,7 +273,7 @@ export function chooseAction(view, level = 'normal', random = Math.random) {
     return null;
   }
 
-  const handCtx = { handCount: view.hand.length, handPlayable: ctx.playable.length };
+  const handCtx = { handCount: view.hand.length, handPlayable: ctx.playable.length, aware: !!ctx.cfg.aware };
   if (legal.pick) {
     const { item } = best(legal.pick, (id) => ctx.noisy(characterValue(view, me, id, handCtx)));
     return { type: 'pick', character: item };

@@ -51,14 +51,17 @@ registerScreen('localSetup', (app) => {
   function addSeat(kind) {
     if (config.seats.length >= EDITION.maxPlayers) return;
     const taken = config.seats.map((s) => s.name);
-    config.seats.push(kind === 'bot' ? { kind, name: pickBotName(taken), level: 'normal' } : { kind, name: `Player ${config.seats.length + 1}` });
+    config.seats.push(
+      kind === 'bot' ? { kind, name: pickBotName(taken), level: 'normal' } : { kind, name: `Player ${config.seats.length + 1}` },
+    );
     play('join');
     persist();
     render();
   }
 
   function render() {
-    setChildren(list,
+    setChildren(
+      list,
       ...config.seats.map((seat, i) => {
         const nameField =
           seat.kind === 'human'
@@ -100,7 +103,8 @@ registerScreen('localSetup', (app) => {
             title: 'Remove seat',
             classes: config.seats.length <= EDITION.minPlayers ? 'disabled' : '',
             onClick: () => {
-              if (config.seats.length <= EDITION.minPlayers) return toast(`At least ${EDITION.minPlayers} players are needed.`, { type: 'error' });
+              if (config.seats.length <= EDITION.minPlayers)
+                return toast(`At least ${EDITION.minPlayers} players are needed.`, { type: 'error' });
               config.seats.splice(i, 1);
               play('leave');
               persist();
@@ -138,7 +142,12 @@ registerScreen('localSetup', (app) => {
         'header',
         { class: 'menu-header' },
         iconButton('back', { title: 'Back', onClick: () => app.go('title') }),
-        h('div', null, h('h2', { class: 'gold-text' }, 'Gather at the Table'), h('p', { class: 'menu-sub' }, 'Friends sharing this device and bots, in any mix.')),
+        h(
+          'div',
+          null,
+          h('h2', { class: 'gold-text' }, 'Gather at the Table'),
+          h('p', { class: 'menu-sub' }, 'Friends sharing this device and bots, in any mix.'),
+        ),
       ),
       h('div', { class: 'ornament' }, 'Players'),
       list,

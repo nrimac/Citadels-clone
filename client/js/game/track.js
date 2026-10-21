@@ -17,7 +17,8 @@ export class CharacterTrack {
     if (this.ids === ids) return;
     this.ids = ids;
     this.slots.clear();
-    setChildren(this.root,
+    setChildren(
+      this.root,
       ...view.characters.map((id) => {
         const owner = h('div', { class: 'track-owner' });
         const marks = h('div', { class: 'track-marks' });
@@ -52,7 +53,8 @@ export class CharacterTrack {
         .join(' ');
       slot.el.title = faceUp.has(id) ? 'Set aside face up this round' : mine.has(id) ? 'Your character' : '';
       setChildren(slot.owner, ownerSeat != null ? fromHTML(crestSVG(ownerSeat)) : '');
-      setChildren(slot.marks,
+      setChildren(
+        slot.marks,
         view.murdered === id ? h('span', { class: 'mark mark-murder', title: 'Murdered' }, icon('skull')) : '',
         view.robbed === id ? h('span', { class: 'mark mark-rob', title: 'Robbed' }, icon('bag')) : '',
       );

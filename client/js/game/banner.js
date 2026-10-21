@@ -45,7 +45,12 @@ export class Banners {
       'div',
       { class: `banner tone-${b.tone ?? 'info'} ${b.big ? 'big' : ''}` },
       art,
-      h('div', { class: 'banner-text' }, h('div', { class: 'banner-title' }, b.title), b.subtitle ? h('div', { class: 'banner-sub' }, b.subtitle) : null),
+      h(
+        'div',
+        { class: 'banner-text' },
+        h('div', { class: 'banner-title' }, b.title),
+        b.subtitle ? h('div', { class: 'banner-sub' }, b.subtitle) : null,
+      ),
     );
     this.root.append(el);
     this.active = el;

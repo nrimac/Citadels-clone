@@ -73,14 +73,31 @@ function citadel() {
     path('M822 192 L850 150 L878 192Z', c),
   ].join('');
   const windows = [
-    [795, 140], [645, 240], [645, 280], [955, 240], [955, 280], [750, 215], [850, 215], [700, 300], [900, 300], [800, 300],
+    [795, 140],
+    [645, 240],
+    [645, 280],
+    [955, 240],
+    [955, 280],
+    [750, 215],
+    [850, 215],
+    [700, 300],
+    [900, 300],
+    [800, 300],
   ]
-    .map(([x, y], i) => `<rect x="${x - 4}" y="${y}" width="8" height="13" rx="4" fill="#ffd27a" class="${i % 3 ? '' : 'twinkle'}" style="animation-delay:${i * 0.7}s"/>`)
+    .map(
+      ([x, y], i) =>
+        `<rect x="${x - 4}" y="${y}" width="8" height="13" rx="4" fill="#ffd27a" class="${i % 3 ? '' : 'twinkle'}" style="animation-delay:${i * 0.7}s"/>`,
+    )
     .join('');
   const flags = [
-    [800, 40], [645, 150], [955, 150],
+    [800, 40],
+    [645, 150],
+    [955, 150],
   ]
-    .map(([x, y]) => `<line x1="${x}" y1="${y}" x2="${x}" y2="${y - 28}" stroke="${c}" stroke-width="3"/><path class="banner" d="M${x} ${y - 28} L${x + 26} ${y - 22} L${x} ${y - 14}Z" fill="#b3262e"/>`)
+    .map(
+      ([x, y]) =>
+        `<line x1="${x}" y1="${y}" x2="${x}" y2="${y - 28}" stroke="${c}" stroke-width="3"/><path class="banner" d="M${x} ${y - 28} L${x + 26} ${y - 22} L${x} ${y - 14}Z" fill="#b3262e"/>`,
+    )
     .join('');
   // Set back and to the left so it frames the title instead of crowding it.
   return `<g transform="translate(-300 110) scale(0.86)" opacity="0.92">${hill}${body}<g filter="url(#glow)" opacity="0.75">${windows}</g>${flags}</g>`;
@@ -105,12 +122,34 @@ export function skylineLayers() {
   );
   const mid = svg(
     `0 0 ${W} ${H}`,
-    cityLayer({ seed: 21, baseY: 520, minH: 50, maxH: 140, minW: 36, maxW: 80, color: '#0d1228', windowChance: 0.22, windowSize: 4, kinds: ['gable', 'gable', 'spire', 'dome', 'crenel', 'flat'] }),
+    cityLayer({
+      seed: 21,
+      baseY: 520,
+      minH: 50,
+      maxH: 140,
+      minW: 36,
+      maxW: 80,
+      color: '#0d1228',
+      windowChance: 0.22,
+      windowSize: 4,
+      kinds: ['gable', 'gable', 'spire', 'dome', 'crenel', 'flat'],
+    }),
     'preserveAspectRatio="xMidYMax slice" class="layer layer-mid"',
   );
   const near = svg(
     `0 0 ${W} ${H}`,
-    cityLayer({ seed: 77, baseY: 610, minH: 60, maxH: 150, minW: 70, maxW: 140, color: '#070a18', windowChance: 0.16, windowSize: 6, kinds: ['gable', 'gable', 'crenel', 'spire'] }),
+    cityLayer({
+      seed: 77,
+      baseY: 610,
+      minH: 60,
+      maxH: 150,
+      minW: 70,
+      maxW: 140,
+      color: '#070a18',
+      windowChance: 0.16,
+      windowSize: 6,
+      kinds: ['gable', 'gable', 'crenel', 'spire'],
+    }),
     'preserveAspectRatio="xMidYMax slice" class="layer layer-near"',
   );
   return { sky, far, mid, near };

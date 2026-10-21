@@ -42,7 +42,6 @@ function boot() {
   };
   app.router = new Router(document.getElementById('app'), app);
 
-
   const code = inviteCode();
   if (code) {
     history.replaceState(null, '', '/');

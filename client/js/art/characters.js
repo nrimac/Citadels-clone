@@ -5,35 +5,91 @@ import { registerDefs, lin, rad } from './defs.js';
 import { circle, ellipse, path, rect, line, poly, star, sparkle, starfield, svg, g } from './svg.js';
 
 registerDefs(`
-  ${lin('bg-assassin', [[0, '#3c2160'], [0.6, '#1c0f2e'], [1, '#0a0610']])}
-  ${lin('bg-thief', [[0, '#3f6463'], [0.6, '#1c3133'], [1, '#0c1517']])}
-  ${lin('bg-magician', [[0, '#2c3c92'], [0.6, '#151d55'], [1, '#080b24']])}
-  ${rad('bg-king', [[0, '#ffe9a6'], [0.55, '#e3ad45'], [1, '#8d5b16']], 'cx="0.5" cy="0.38" r="0.75"')}
-  ${lin('bg-bishop', [[0, '#1d2440'], [1, '#0c0f1c']])}
-  ${lin('bg-merchant', [[0, '#4b8f55'], [0.6, '#235a2e'], [1, '#0f2a16']])}
-  ${lin('bg-architect', [[0, '#f6b562'], [0.55, '#d4702e'], [1, '#5e2610']])}
-  ${lin('bg-warlord', [[0, '#c23b22'], [0.55, '#6e160d'], [1, '#220604']])}
-  ${lin('cloth-olive', [[0, '#6b7445'], [1, '#2d331b']])}
-  ${lin('cloth-brown', [[0, '#8a5a32'], [1, '#432812']])}
-  ${lin('cloth-cream', [[0, '#fbf6e8'], [1, '#d9cfb4']])}
-  ${lin('hat-blue', [[0, '#3c55c4'], [1, '#18235a']])}
-  ${lin('beard-white', [[0, '#ffffff'], [1, '#c3c8d6']])}
-  ${lin('plume-red', [[0, '#ff5a3c'], [1, '#8a120b']])}
-  ${lin('blueprint', [[0, '#3f78c2'], [1, '#1d3f73']])}
-  ${rad('cheek', [[0, '#e8786a', 0.55], [1, '#e8786a', 0]])}
+  ${lin('bg-assassin', [
+    [0, '#3c2160'],
+    [0.6, '#1c0f2e'],
+    [1, '#0a0610'],
+  ])}
+  ${lin('bg-thief', [
+    [0, '#3f6463'],
+    [0.6, '#1c3133'],
+    [1, '#0c1517'],
+  ])}
+  ${lin('bg-magician', [
+    [0, '#2c3c92'],
+    [0.6, '#151d55'],
+    [1, '#080b24'],
+  ])}
+  ${rad(
+    'bg-king',
+    [
+      [0, '#ffe9a6'],
+      [0.55, '#e3ad45'],
+      [1, '#8d5b16'],
+    ],
+    'cx="0.5" cy="0.38" r="0.75"',
+  )}
+  ${lin('bg-bishop', [
+    [0, '#1d2440'],
+    [1, '#0c0f1c'],
+  ])}
+  ${lin('bg-merchant', [
+    [0, '#4b8f55'],
+    [0.6, '#235a2e'],
+    [1, '#0f2a16'],
+  ])}
+  ${lin('bg-architect', [
+    [0, '#f6b562'],
+    [0.55, '#d4702e'],
+    [1, '#5e2610'],
+  ])}
+  ${lin('bg-warlord', [
+    [0, '#c23b22'],
+    [0.55, '#6e160d'],
+    [1, '#220604'],
+  ])}
+  ${lin('cloth-olive', [
+    [0, '#6b7445'],
+    [1, '#2d331b'],
+  ])}
+  ${lin('cloth-brown', [
+    [0, '#8a5a32'],
+    [1, '#432812'],
+  ])}
+  ${lin('cloth-cream', [
+    [0, '#fbf6e8'],
+    [1, '#d9cfb4'],
+  ])}
+  ${lin('hat-blue', [
+    [0, '#3c55c4'],
+    [1, '#18235a'],
+  ])}
+  ${lin('beard-white', [
+    [0, '#ffffff'],
+    [1, '#c3c8d6'],
+  ])}
+  ${lin('plume-red', [
+    [0, '#ff5a3c'],
+    [1, '#8a120b'],
+  ])}
+  ${lin('blueprint', [
+    [0, '#3f78c2'],
+    [1, '#1d3f73'],
+  ])}
+  ${rad('cheek', [
+    [0, '#e8786a', 0.55],
+    [1, '#e8786a', 0],
+  ])}
 `);
 
 // ------------------------------------------------------------------ parts
 
-const shoulders = (fill, extra = '') =>
-  path('M14 260 C18 206 54 184 100 180 C146 184 182 206 186 260 Z', fill, extra);
+const shoulders = (fill, extra = '') => path('M14 260 C18 206 54 184 100 180 C146 184 182 206 186 260 Z', fill, extra);
 
 const neck = (fill = 'url(#skin)') => path('M86 150 L114 150 L116 186 Q100 194 84 186 Z', fill);
 
 const head = (fill = 'url(#skin)', rx = 30, ry = 36, cy = 120) =>
-  ellipse(100, cy, rx, ry, fill) +
-  ellipse(70.5, cy + 4, 5, 8, fill) +
-  ellipse(129.5, cy + 4, 5, 8, fill);
+  ellipse(100, cy, rx, ry, fill) + ellipse(70.5, cy + 4, 5, 8, fill) + ellipse(129.5, cy + 4, 5, 8, fill);
 
 const eyes = (y = 118, color = '#2a1a10', spread = 11) =>
   ellipse(100 - spread, y, 4, 2.6, '#fff') +
@@ -48,7 +104,11 @@ const brows = (y = 110, color = '#3a2412', w = 2.4, tilt = 0) =>
   path(`M${104} ${y - tilt * 0.3} Q111 ${y - 3} 118 ${y + tilt}`, 'none', `stroke="${color}" stroke-width="${w}" stroke-linecap="round"`);
 
 const nose = (y = 120) =>
-  path(`M100 ${y - 6} Q97 ${y + 6} 99 ${y + 9} Q102 ${y + 11} 105 ${y + 8}`, 'none', 'stroke="#9a6440" stroke-width="1.6" stroke-linecap="round" opacity="0.75"');
+  path(
+    `M100 ${y - 6} Q97 ${y + 6} 99 ${y + 9} Q102 ${y + 11} 105 ${y + 8}`,
+    'none',
+    'stroke="#9a6440" stroke-width="1.6" stroke-linecap="round" opacity="0.75"',
+  );
 
 const mouth = (y = 140, curve = 3, color = '#8a3b2a') =>
   path(`M91 ${y} Q100 ${y + curve} 109 ${y}`, 'none', `stroke="${color}" stroke-width="2" stroke-linecap="round"`);
@@ -89,7 +149,10 @@ const PORTRAITS = {
       circle(162, 45, 20, '#33204f') +
       rooftops('#140b20', 20) +
       // Cloak and hood
-      path('M100 48 C58 50 42 96 46 136 C49 168 34 200 18 260 L182 260 C166 200 151 168 154 136 C158 96 142 50 100 48 Z', 'url(#cloth-dark)') +
+      path(
+        'M100 48 C58 50 42 96 46 136 C49 168 34 200 18 260 L182 260 C166 200 151 168 154 136 C158 96 142 50 100 48 Z',
+        'url(#cloth-dark)',
+      ) +
       path('M100 48 C58 50 42 96 46 136 C49 168 34 200 18 260', 'none', 'stroke="#55556c" stroke-width="2" opacity="0.6"') +
       path('M100 48 C142 50 158 96 154 136 C151 168 166 200 182 260', 'none', 'stroke="#000" stroke-width="2" opacity="0.4"') +
       folds(['M70 190 Q76 220 66 258', 'M132 190 Q126 222 136 258', 'M100 196 L100 258']) +
@@ -118,11 +181,13 @@ const PORTRAITS = {
       shoulders('url(#cloth-olive)') +
       path('M62 190 L100 250 L138 190 Q100 200 62 190Z', 'url(#cloth-brown)') +
       path('M100 200 L100 260', 'none', 'stroke="#2a1708" stroke-width="2"') +
-      circle(100, 214, 2.4, 'url(#gold)') + circle(100, 230, 2.4, 'url(#gold)') +
+      circle(100, 214, 2.4, 'url(#gold)') +
+      circle(100, 230, 2.4, 'url(#gold)') +
       neck() +
       head() +
       // Hair tufts
-      path('M70 118 Q66 98 78 92 L80 120Z', '#3b2414') + path('M130 118 Q134 98 122 92 L120 120Z', '#3b2414') +
+      path('M70 118 Q66 98 78 92 L80 120Z', '#3b2414') +
+      path('M130 118 Q134 98 122 92 L120 120Z', '#3b2414') +
       // Domino mask
       path('M70 110 Q100 100 130 110 L128 124 Q116 130 104 122 L96 122 Q84 130 72 124 Z', '#141414') +
       eyes(116, '#1f6f4a', 12) +
@@ -157,27 +222,37 @@ const PORTRAITS = {
       // Robe
       shoulders('url(#cloth-blue)') +
       path('M66 188 Q100 206 134 188', 'none', 'stroke="url(#gold-h)" stroke-width="5"') +
-      star(60, 230, 5, '#f2c94c', 5, 0.45, 'opacity="0.8"') + star(146, 240, 4, '#f2c94c', 5, 0.45, 'opacity="0.8"') +
+      star(60, 230, 5, '#f2c94c', 5, 0.45, 'opacity="0.8"') +
+      star(146, 240, 4, '#f2c94c', 5, 0.45, 'opacity="0.8"') +
       neck() +
       head() +
       eyes(118, '#2a3f8a', 11) +
       brows(109, '#eef0f6', 4, 2) +
       nose(122) +
       // Flowing beard and moustache
-      path('M72 128 Q70 160 82 196 Q92 230 100 244 Q108 230 118 196 Q130 160 128 128 Q116 146 100 146 Q84 146 72 128Z', 'url(#beard-white)') +
+      path(
+        'M72 128 Q70 160 82 196 Q92 230 100 244 Q108 230 118 196 Q130 160 128 128 Q116 146 100 146 Q84 146 72 128Z',
+        'url(#beard-white)',
+      ) +
       folds(['M88 160 Q92 196 98 230', 'M110 160 Q108 196 102 230', 'M80 150 Q84 176 90 200', 'M120 150 Q116 176 110 200'], 0.12) +
       path('M84 136 Q92 130 100 134 Q108 130 116 136 Q110 142 100 139 Q90 142 84 136Z', '#f6f7fb') +
       // Hat
       ellipse(100, 98, 60, 11, 'url(#hat-blue)') +
       path('M64 98 Q80 60 104 26 Q112 14 132 12 Q118 24 118 38 Q124 70 136 98 Z', 'url(#hat-blue)') +
       path('M66 94 Q100 104 134 94 L136 99 Q100 110 64 99Z', 'url(#gold)') +
-      star(98, 64, 6, '#f2c94c') + star(118, 80, 4, '#f2c94c') + star(110, 42, 3.5, '#f2c94c') +
+      star(98, 64, 6, '#f2c94c') +
+      star(118, 80, 4, '#f2c94c') +
+      star(110, 42, 3.5, '#f2c94c') +
       path('M84 80 a7 7 0 1 0 9 -8 a5.5 5.5 0 1 1 -9 8z', '#f2c94c') +
       // Orb with hands
       circle(100, 214, 30, 'url(#halo)') +
       circle(100, 214, 17, 'url(#orb)', 'filter="url(#glow)"') +
-      ellipse(84, 228, 9, 7, 'url(#skin)') + ellipse(116, 228, 9, 7, 'url(#skin)') +
-      sparkle(66, 196, 6, '#dff6ff') + sparkle(138, 186, 5, '#dff6ff') + sparkle(126, 240, 4, '#dff6ff') + sparkle(150, 130, 4, '#dff6ff') +
+      ellipse(84, 228, 9, 7, 'url(#skin)') +
+      ellipse(116, 228, 9, 7, 'url(#skin)') +
+      sparkle(66, 196, 6, '#dff6ff') +
+      sparkle(138, 186, 5, '#dff6ff') +
+      sparkle(126, 240, 4, '#dff6ff') +
+      sparkle(150, 130, 4, '#dff6ff') +
       vignette
     );
   },
@@ -213,9 +288,13 @@ const PORTRAITS = {
       // Crown
       path('M66 98 L68 66 L80 84 L90 58 L100 80 L110 58 L120 84 L132 66 L134 98 Z', 'url(#gold)', 'stroke="#7a5212" stroke-width="1"') +
       rect(64, 92, 72, 12, 'url(#gold-h)', 'rx="2" stroke="#7a5212" stroke-width="1"') +
-      circle(68, 64, 3.5, 'url(#gold)') + circle(90, 56, 3.5, 'url(#gold)') + circle(110, 56, 3.5, 'url(#gold)') + circle(132, 64, 3.5, 'url(#gold)') +
+      circle(68, 64, 3.5, 'url(#gold)') +
+      circle(90, 56, 3.5, 'url(#gold)') +
+      circle(110, 56, 3.5, 'url(#gold)') +
+      circle(132, 64, 3.5, 'url(#gold)') +
       ellipse(100, 98, 5, 4, '#c0162b', 'stroke="#fff" stroke-width="0.6"') +
-      ellipse(80, 98, 3.5, 3, '#1f5fc8') + ellipse(120, 98, 3.5, 3, '#1f9a4a') +
+      ellipse(80, 98, 3.5, 3, '#1f5fc8') +
+      ellipse(120, 98, 3.5, 3, '#1f9a4a') +
       // Scepter
       rect(150, 150, 6, 110, 'url(#gold-h)', 'rx="3"') +
       circle(153, 146, 9, 'url(#gold)', 'stroke="#7a5212" stroke-width="1"') +
@@ -264,7 +343,11 @@ const PORTRAITS = {
       path('M100 44 L100 74 M89 56 L111 56', 'none', 'stroke="#b8343a" stroke-width="3.4" stroke-linecap="round"') +
       // Crozier
       rect(40, 70, 5, 190, 'url(#gold-h)', 'rx="2"') +
-      path('M42.5 74 C42 46 66 42 66 60 C66 72 52 72 52 62 C52 56 58 56 58 60', 'none', 'stroke="url(#gold)" stroke-width="5" stroke-linecap="round"') +
+      path(
+        'M42.5 74 C42 46 66 42 66 60 C66 72 52 72 52 62 C52 56 58 56 58 60',
+        'none',
+        'stroke="url(#gold)" stroke-width="5" stroke-linecap="round"',
+      ) +
       vignette
     );
   },
@@ -277,8 +360,13 @@ const PORTRAITS = {
     return (
       rect(0, 0, 200, 260, 'url(#bg-merchant)') +
       awning +
-      path('M0 30 Q10 40 20 30 Q30 40 40 30 Q50 40 60 30 Q70 40 80 30 Q90 40 100 30 Q110 40 120 30 Q130 40 140 30 Q150 40 160 30 Q170 40 180 30 Q190 40 200 30', 'none', 'stroke="#5a1a14" stroke-width="1.2" opacity="0.5"') +
-      circle(28, 64, 6, 'url(#window-glow)', 'filter="url(#glow)"') + circle(172, 64, 6, 'url(#window-glow)', 'filter="url(#glow)"') +
+      path(
+        'M0 30 Q10 40 20 30 Q30 40 40 30 Q50 40 60 30 Q70 40 80 30 Q90 40 100 30 Q110 40 120 30 Q130 40 140 30 Q150 40 160 30 Q170 40 180 30 Q190 40 200 30',
+        'none',
+        'stroke="#5a1a14" stroke-width="1.2" opacity="0.5"',
+      ) +
+      circle(28, 64, 6, 'url(#window-glow)', 'filter="url(#glow)"') +
+      circle(172, 64, 6, 'url(#window-glow)', 'filter="url(#glow)"') +
       // Robe with fur collar
       shoulders('url(#cloth-green)') +
       path('M44 204 Q100 230 156 204 Q150 190 100 196 Q50 190 44 204Z', '#7a5534') +
@@ -286,11 +374,16 @@ const PORTRAITS = {
       circle(100, 222, 5, 'url(#gold)') +
       neck() +
       head('url(#skin)', 33, 35, 122) +
-      circle(80, 132, 9, 'url(#cheek)') + circle(120, 132, 9, 'url(#cheek)') +
+      circle(80, 132, 9, 'url(#cheek)') +
+      circle(120, 132, 9, 'url(#cheek)') +
       path('M84 120 Q89 115 94 120 M106 120 Q111 115 116 120', 'none', 'stroke="#2a1a10" stroke-width="2.4" stroke-linecap="round"') +
       brows(110, '#5a3a1e', 2.4) +
       nose(124) +
-      path('M82 140 Q90 132 100 138 Q110 132 118 140 Q122 136 124 130 M82 140 Q78 136 76 130', 'none', 'stroke="#5a3a1e" stroke-width="3" stroke-linecap="round"') +
+      path(
+        'M82 140 Q90 132 100 138 Q110 132 118 140 Q122 136 124 130 M82 140 Q78 136 76 130',
+        'none',
+        'stroke="#5a3a1e" stroke-width="3" stroke-linecap="round"',
+      ) +
       path('M92 146 Q100 152 108 146', 'none', 'stroke="#8a3b2a" stroke-width="2" stroke-linecap="round"') +
       path('M97 154 Q100 162 103 154Z', '#5a3a1e') +
       // Wide hat
@@ -319,7 +412,14 @@ const PORTRAITS = {
     for (let x = 132; x <= 186; x += 18) scaffold += line(x, 50, x, 200, '#5e2610', 2, 'opacity="0.5"');
     return (
       rect(0, 0, 200, 260, 'url(#bg-architect)') +
-      g(path('M0 0 V260 M20 0 V260 M40 0 V260 M60 0 V260 M80 0 V260 M100 0 V260 M120 0 V260 M140 0 V260 M160 0 V260 M180 0 V260 M0 20 H200 M0 40 H200 M0 60 H200 M0 80 H200 M0 100 H200 M0 120 H200 M0 140 H200', 'none', 'stroke="#fff" stroke-width="0.4"'), 'opacity="0.12"') +
+      g(
+        path(
+          'M0 0 V260 M20 0 V260 M40 0 V260 M60 0 V260 M80 0 V260 M100 0 V260 M120 0 V260 M140 0 V260 M160 0 V260 M180 0 V260 M0 20 H200 M0 40 H200 M0 60 H200 M0 80 H200 M0 100 H200 M0 120 H200 M0 140 H200',
+          'none',
+          'stroke="#fff" stroke-width="0.4"',
+        ),
+        'opacity="0.12"',
+      ) +
       // Unfinished tower with scaffolding and a crane
       path('M140 200 L140 76 L178 76 L178 200Z', '#7a3416', 'opacity="0.75"') +
       scaffold +
@@ -346,7 +446,12 @@ const PORTRAITS = {
       ellipse(132, 94, 18, 7, '#2f4a73') +
       line(124, 100, 146, 84, '#e2a64a', 3, 'stroke-linecap="round"') +
       // Rolled blueprint
-      g(rect(-26, -8, 52, 16, 'url(#blueprint)', 'rx="8"') + ellipse(26, 0, 4, 8, '#9ec4f2') + path('M-18 -3 H14 M-18 3 H8', 'none', 'stroke="#cfe3ff" stroke-width="0.8"'), 'transform="translate(52 214) rotate(-18)"') +
+      g(
+        rect(-26, -8, 52, 16, 'url(#blueprint)', 'rx="8"') +
+          ellipse(26, 0, 4, 8, '#9ec4f2') +
+          path('M-18 -3 H14 M-18 3 H8', 'none', 'stroke="#cfe3ff" stroke-width="0.8"'),
+        'transform="translate(52 214) rotate(-18)"',
+      ) +
       // Compass / dividers
       g(
         line(0, 0, -16, 62, 'url(#silver-h)', 4, 'stroke-linecap="round"') +
@@ -367,7 +472,13 @@ const PORTRAITS = {
     }
     const banner = (x, flip) =>
       line(x, 30, x, 200, '#2a1006', 3) +
-      path(flip ? `M${x} 36 L${x - 34} 40 L${x - 26} 60 L${x - 34} 80 L${x} 76Z` : `M${x} 36 L${x + 34} 40 L${x + 26} 60 L${x + 34} 80 L${x} 76Z`, '#7c1a16', 'stroke="#1a0503" stroke-width="1.2"');
+      path(
+        flip
+          ? `M${x} 36 L${x - 34} 40 L${x - 26} 60 L${x - 34} 80 L${x} 76Z`
+          : `M${x} 36 L${x + 34} 40 L${x + 26} 60 L${x + 34} 80 L${x} 76Z`,
+        '#7c1a16',
+        'stroke="#1a0503" stroke-width="1.2"',
+      );
     return (
       rect(0, 0, 200, 260, 'url(#bg-warlord)') +
       ellipse(40, 120, 60, 30, '#2a0805', 'opacity="0.55" filter="url(#blur-lg)"') +
@@ -391,7 +502,11 @@ const PORTRAITS = {
       path('M72 128 Q72 166 100 172 Q128 166 128 128 Q120 148 100 150 Q80 148 72 128Z', '#1c1410') +
       path('M88 144 Q100 140 112 144', 'none', 'stroke="#5a2412" stroke-width="2.2" stroke-linecap="round"') +
       // Helmet with nasal guard and plume
-      path('M66 112 Q64 68 100 64 Q136 68 134 112 L126 112 Q124 86 100 84 Q76 86 74 112Z', 'url(#silver)', 'stroke="#3b4250" stroke-width="1.5"') +
+      path(
+        'M66 112 Q64 68 100 64 Q136 68 134 112 L126 112 Q124 86 100 84 Q76 86 74 112Z',
+        'url(#silver)',
+        'stroke="#3b4250" stroke-width="1.5"',
+      ) +
       path('M66 112 Q100 104 134 112 L134 102 Q100 94 66 102Z', 'url(#steel)') +
       rect(97, 98, 6, 30, 'url(#silver-h)', 'rx="2"') +
       path('M100 64 Q90 40 106 22 Q124 10 140 18 Q120 24 116 40 Q112 54 104 66Z', 'url(#plume-red)') +
@@ -416,9 +531,7 @@ const cache = new Map();
 export function portraitSVG(id) {
   if (!cache.has(id)) {
     const draw = PORTRAITS[id];
-    const body = draw
-      ? draw()
-      : rect(0, 0, 200, 260, '#2a2a38') + shoulders('#444') + head('#555') + vignette;
+    const body = draw ? draw() : rect(0, 0, 200, 260, '#2a2a38') + shoulders('#444') + head('#555') + vignette;
     cache.set(id, svg('0 0 200 260', body, 'preserveAspectRatio="xMidYMid slice" class="portrait-svg"'));
   }
   return cache.get(id);

@@ -35,9 +35,7 @@ function handle(manager, client, msg) {
   if (msg.t !== C.HELLO && !client.token) throw new RoomError('hello', 'Say hello first.');
   switch (msg.t) {
     case C.HELLO: {
-      client.token = typeof msg.token === 'string' && TOKEN_RE.test(msg.token)
-        ? msg.token
-        : crypto.randomBytes(18).toString('base64url');
+      client.token = typeof msg.token === 'string' && TOKEN_RE.test(msg.token) ? msg.token : crypto.randomBytes(18).toString('base64url');
       client.send({ t: S.WELCOME, token: client.token, version: PROTOCOL_VERSION });
       if (!manager.resume(client)) client.send({ t: S.ROOM, room: null });
       return;

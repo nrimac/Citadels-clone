@@ -14,24 +14,48 @@ function overview() {
   return h(
     'div',
     { class: 'rules-section' },
-    p('Every player is building a city of districts. When someone completes their city (8 districts by default), the round is finished and the grandest city wins.'),
+    p(
+      'Every player is building a city of districts. When someone completes their city (8 districts by default), the round is finished and the grandest city wins.',
+    ),
     h('h3', null, 'Each round'),
     h(
       'ol',
       null,
-      h('li', null, strong('Choose a character. '), 'Starting with the player who holds the crown, everyone secretly picks one of the eight characters. Some characters are set aside face up or face down, so nobody knows exactly who took what.'),
-      h('li', null, strong('Characters are called in order. '), 'From the Assassin (I) to the Warlord (VIII), each character is called and its owner takes a turn.'),
+      h(
+        'li',
+        null,
+        strong('Choose a character. '),
+        'Starting with the player who holds the crown, everyone secretly picks one of the eight characters. Some characters are set aside face up or face down, so nobody knows exactly who took what.',
+      ),
+      h(
+        'li',
+        null,
+        strong('Characters are called in order. '),
+        'From the Assassin (I) to the Warlord (VIII), each character is called and its owner takes a turn.',
+      ),
     ),
     h('h3', null, 'On your turn'),
     h(
       'ol',
       null,
       h('li', null, strong('Gather resources: '), 'take 2 gold from the bank, or draw 2 district cards and keep 1.'),
-      h('li', null, strong('Build: '), 'you may build one district from your hand by paying its cost. You may not build two identical districts.'),
-      h('li', null, strong('Use your character’s ability '), '— at any time during your turn. Characters with a suit gem collect 1 gold for each district of that suit in your city.'),
+      h(
+        'li',
+        null,
+        strong('Build: '),
+        'you may build one district from your hand by paying its cost. You may not build two identical districts.',
+      ),
+      h(
+        'li',
+        null,
+        strong('Use your character’s ability '),
+        '— at any time during your turn. Characters with a suit gem collect 1 gold for each district of that suit in your city.',
+      ),
     ),
     h('h3', null, 'Sharing a device'),
-    p('In a local game with several people, the table hides private cards between turns and asks you to pass the device along. Bots play their turns on their own.'),
+    p(
+      'In a local game with several people, the table hides private cards between turns and asks you to pass the device along. Bots play their turns on their own.',
+    ),
   );
 }
 
@@ -45,7 +69,13 @@ function characters() {
         'div',
         { class: 'rules-entry' },
         characterCard(id, { classes: 'no-preview' }),
-        h('div', null, h('h4', null, `${getCharacter(id).rank}. ${getCharacter(id).name}`), h('em', { class: 'epithet' }, getCharacter(id).epithet), p(getCharacter(id).text)),
+        h(
+          'div',
+          null,
+          h('h4', null, `${getCharacter(id).rank}. ${getCharacter(id).name}`),
+          h('em', { class: 'epithet' }, getCharacter(id).epithet),
+          p(getCharacter(id).text),
+        ),
       ),
     ),
   );
@@ -57,7 +87,9 @@ function districts() {
   return h(
     'div',
     { class: 'rules-section' },
-    p('Districts come in five suits. Noble, religious, trade and military districts feed the taxes of the King, Bishop, Merchant and Warlord. Unique districts (purple) bend the rules:'),
+    p(
+      'Districts come in five suits. Noble, religious, trade and military districts feed the taxes of the King, Bishop, Merchant and Warlord. Unique districts (purple) bend the rules:',
+    ),
     h(
       'div',
       { class: 'suit-legend' },
@@ -114,10 +146,17 @@ export function openRules(initial = 0) {
   };
   TABS.forEach(([label], i) =>
     tabs.append(
-      h('button', { type: 'button', onclick: () => {
-        play('cardFlip');
-        show(i);
-      } }, label),
+      h(
+        'button',
+        {
+          type: 'button',
+          onclick: () => {
+            play('cardFlip');
+            show(i);
+          },
+        },
+        label,
+      ),
     ),
   );
   show(initial);

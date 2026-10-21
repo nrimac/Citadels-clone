@@ -1,13 +1,11 @@
 // Tiny helpers for composing SVG markup as strings. All art in the game is
 // hand-built from these primitives — no external images are used.
 
-export const svg = (viewBox, body, attrs = '') =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" ${attrs}>${body}</svg>`;
+export const svg = (viewBox, body, attrs = '') => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" ${attrs}>${body}</svg>`;
 
 export const g = (body, attrs = '') => `<g ${attrs}>${body}</g>`;
 
-export const rect = (x, y, w, h, fill, extra = '') =>
-  `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${extra}/>`;
+export const rect = (x, y, w, h, fill, extra = '') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${extra}/>`;
 
 export const circle = (cx, cy, r, fill, extra = '') => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" ${extra}/>`;
 

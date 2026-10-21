@@ -25,9 +25,7 @@ const ASSASSIN = {
       prompt: 'Choose a character to murder',
       input: 'character',
       options: (ctx) =>
-        ctx
-          .characterIds()
-          .filter((id) => ctx.character(id).rank > 1 && !ctx.isFaceUp(id) && !ctx.ownsCharacter(ctx.seat, id)),
+        ctx.characterIds().filter((id) => ctx.character(id).rank > 1 && !ctx.isFaceUp(id) && !ctx.ownsCharacter(ctx.seat, id)),
       apply(ctx, { target }) {
         ctx.state.murdered = target;
         ctx.log('murder', { seat: ctx.seat, target });
@@ -51,13 +49,7 @@ const THIEF = {
       options: (ctx) =>
         ctx
           .characterIds()
-          .filter(
-            (id) =>
-              ctx.character(id).rank > 2 &&
-              id !== ctx.state.murdered &&
-              !ctx.isFaceUp(id) &&
-              !ctx.ownsCharacter(ctx.seat, id),
-          ),
+          .filter((id) => ctx.character(id).rank > 2 && id !== ctx.state.murdered && !ctx.isFaceUp(id) && !ctx.ownsCharacter(ctx.seat, id)),
       apply(ctx, { target }) {
         ctx.state.robbed = target;
         ctx.state.robbedBy = ctx.seat;

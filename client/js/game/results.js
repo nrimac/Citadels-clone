@@ -19,10 +19,29 @@ export function buildResults(view, { canRematch, onRematch, onLeave, onClose }) 
       { class: `score-row ${i === 0 ? 'first' : ''} ${seat === view.you ? 'me' : ''}`, style: { animationDelay: `${0.25 + i * 0.12}s` } },
       h('div', { class: 'score-place' }, i === 0 ? h('div', { class: 'score-crown', html: crownSVG() }) : ORDINAL[i]),
       fromHTML(crestSVG(seat)),
-      h('div', { class: 'score-name' }, h('div', null, p.name), h('div', { class: 'score-city' }, p.city.map((c) => districtMini(c)))),
+      h(
+        'div',
+        { class: 'score-name' },
+        h('div', null, p.name),
+        h(
+          'div',
+          { class: 'score-city' },
+          p.city.map((c) => districtMini(c)),
+        ),
+      ),
       h('div', { class: 'score-part', title: 'District value' }, h('small', null, 'Districts'), h('b', null, String(s.districts))),
-      h('div', { class: 'score-part', title: 'All five suits' }, h('small', null, 'Suits'), h('b', null, s.allSuits ? `+${s.allSuits}` : '—')),
-      h('div', { class: 'score-part', title: 'Completed city' }, h('small', null, 'Complete'), h('b', null, s.complete ? `+${s.complete}` : '—')),
+      h(
+        'div',
+        { class: 'score-part', title: 'All five suits' },
+        h('small', null, 'Suits'),
+        h('b', null, s.allSuits ? `+${s.allSuits}` : '—'),
+      ),
+      h(
+        'div',
+        { class: 'score-part', title: 'Completed city' },
+        h('small', null, 'Complete'),
+        h('b', null, s.complete ? `+${s.complete}` : '—'),
+      ),
       h('div', { class: 'score-total' }, String(s.total)),
     );
   });
@@ -32,14 +51,24 @@ export function buildResults(view, { canRematch, onRematch, onLeave, onClose }) 
     { class: 'results' },
     h('div', { class: 'results-crown', html: crownSVG() }),
     h('h2', { class: 'overlay-title gold-text' }, youWon ? 'Victory!' : `${winner.name} Rules the Realm`),
-    h('p', { class: 'overlay-sub' }, youWon ? 'Your citadel is the envy of the land.' : view.you != null ? 'The crown slips from your grasp… this time.' : 'The final reckoning'),
+    h(
+      'p',
+      { class: 'overlay-sub' },
+      youWon
+        ? 'Your citadel is the envy of the land.'
+        : view.you != null
+          ? 'The crown slips from your grasp… this time.'
+          : 'The final reckoning',
+    ),
     h('div', { class: 'score-table' }, rows),
     h(
       'div',
       { class: 'overlay-actions' },
       button('Back to the table', { variant: 'ghost', icon: 'eye', onClick: onClose }),
       button('Leave', { variant: 'ghost', icon: 'exit', onClick: onLeave }),
-      canRematch ? button('Play again', { variant: 'primary', icon: 'refresh', onClick: onRematch }) : h('div', { class: 'waiting-note' }, 'Waiting for the host to call a rematch…'),
+      canRematch
+        ? button('Play again', { variant: 'primary', icon: 'refresh', onClick: onRematch })
+        : h('div', { class: 'waiting-note' }, 'Waiting for the host to call a rematch…'),
     ),
   );
 }

@@ -27,7 +27,11 @@ export function openSettings({ onPacing } = {}) {
     volumeRow('Master', 'master', 'coin'),
     volumeRow('Music', 'music'),
     volumeRow('Effects', 'sfx', 'cardFlip'),
-    h('div', { class: 'settings-row' }, toggle('Mute everything', settings.get('muted'), (v) => settings.set({ muted: v }))),
+    h(
+      'div',
+      { class: 'settings-row' },
+      toggle('Mute everything', settings.get('muted'), (v) => settings.set({ muted: v })),
+    ),
     h('div', { class: 'ornament' }, 'Table'),
     h(
       'div',
@@ -46,8 +50,16 @@ export function openSettings({ onPacing } = {}) {
         },
       ),
     ),
-    h('div', { class: 'settings-row' }, toggle('Reduce motion', settings.get('reduceMotion'), (v) => settings.set({ reduceMotion: v }))),
-    h('div', { class: 'settings-row' }, toggle('Show hints', settings.get('showHints'), (v) => settings.set({ showHints: v }))),
+    h(
+      'div',
+      { class: 'settings-row' },
+      toggle('Reduce motion', settings.get('reduceMotion'), (v) => settings.set({ reduceMotion: v })),
+    ),
+    h(
+      'div',
+      { class: 'settings-row' },
+      toggle('Show hints', settings.get('showHints'), (v) => settings.set({ showHints: v })),
+    ),
   );
 
   const modal = openModal({

@@ -22,7 +22,15 @@ export function sceneBackdrop() {
     h('div', { class: 'scene-layer depth-2', html: layers.mid }),
     h('div', { class: 'fog fog-front' }),
     h('div', { class: 'scene-layer depth-3', html: layers.near }),
-    h('div', { class: 'embers' }, Array.from({ length: 18 }, (_, i) => h('span', { style: { '--drift': `${((i * 7) % 9 - 4) * 30}px`, left: `${(i * 37) % 100}%`, animationDelay: `${(i * 1.7) % 12}s` } }))),
+    h(
+      'div',
+      { class: 'embers' },
+      Array.from({ length: 18 }, (_, i) =>
+        h('span', {
+          style: { '--drift': `${(((i * 7) % 9) - 4) * 30}px`, left: `${(i * 37) % 100}%`, animationDelay: `${(i * 1.7) % 12}s` },
+        }),
+      ),
+    ),
   );
   const onMove = (e) => {
     const x = e.clientX / window.innerWidth - 0.5;
@@ -40,7 +48,11 @@ registerScreen('title', (app) => {
   const backdrop = sceneBackdrop();
 
   const quickGame = () => {
-    const session = new LocalSession({ seats: quickGameSeats(settings.get('name')), options: { cityGoal: 8 }, pacing: settings.get('pacing') });
+    const session = new LocalSession({
+      seats: quickGameSeats(settings.get('name')),
+      options: { cityGoal: 8 },
+      pacing: settings.get('pacing'),
+    });
     app.go('game', { session });
   };
 

@@ -57,7 +57,10 @@ describe('draft', () => {
       order.push(seat);
       ok(applyAction(s, seat, { type: 'pick', character: s.draft.pool[0] }));
     }
-    assert.deepEqual(order, [0, 1, 2, 3, 4].map((i) => (s.log.find((e) => e.type === 'round-start').crown + i) % 5));
+    assert.deepEqual(
+      order,
+      [0, 1, 2, 3, 4].map((i) => (s.log.find((e) => e.type === 'round-start').crown + i) % 5),
+    );
   });
 
   test('only the picker may pick, and only from the pool', () => {
@@ -470,7 +473,14 @@ describe('robustness', () => {
   });
 
   test('state is JSON serializable and survives a round-trip', () => {
-    const s = createGame({ players: [{ id: 'a', name: 'A' }, { id: 'b', name: 'B' }, { id: 'c', name: 'C' }], seed: 7 });
+    const s = createGame({
+      players: [
+        { id: 'a', name: 'A' },
+        { id: 'b', name: 'B' },
+        { id: 'c', name: 'C' },
+      ],
+      seed: 7,
+    });
     const copy = JSON.parse(JSON.stringify(s));
     assert.deepEqual(getView(copy, 0), getView(s, 0));
   });

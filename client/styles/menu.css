@@ -35,10 +35,18 @@
   height: 100%;
 }
 
-.depth-0 { transform: translate(calc(var(--px) * -6px), calc(var(--py) * -4px)); }
-.depth-1 { transform: translate(calc(var(--px) * -14px), calc(var(--py) * -6px)); }
-.depth-2 { transform: translate(calc(var(--px) * -26px), calc(var(--py) * -9px)); }
-.depth-3 { transform: translate(calc(var(--px) * -44px), calc(var(--py) * -12px)); }
+.depth-0 {
+  transform: translate(calc(var(--px) * -6px), calc(var(--py) * -4px));
+}
+.depth-1 {
+  transform: translate(calc(var(--px) * -14px), calc(var(--py) * -6px));
+}
+.depth-2 {
+  transform: translate(calc(var(--px) * -26px), calc(var(--py) * -9px));
+}
+.depth-3 {
+  transform: translate(calc(var(--px) * -44px), calc(var(--py) * -12px));
+}
 
 .scene .twinkle {
   animation: twinkle 6s ease-in-out infinite;
@@ -501,14 +509,24 @@
   font-family: var(--font-title);
   font-weight: 900;
   font-size: 2rem;
-  box-shadow: inset 0 -3px 0 rgba(122, 82, 18, 0.4), var(--shadow-sm);
+  box-shadow:
+    inset 0 -3px 0 rgba(122, 82, 18, 0.4),
+    var(--shadow-sm);
   animation: flip-in 500ms var(--ease-spring) both;
 }
 
-.code-letters span:nth-child(2) { animation-delay: 60ms; }
-.code-letters span:nth-child(3) { animation-delay: 120ms; }
-.code-letters span:nth-child(4) { animation-delay: 180ms; }
-.code-letters span:nth-child(5) { animation-delay: 240ms; }
+.code-letters span:nth-child(2) {
+  animation-delay: 60ms;
+}
+.code-letters span:nth-child(3) {
+  animation-delay: 120ms;
+}
+.code-letters span:nth-child(4) {
+  animation-delay: 180ms;
+}
+.code-letters span:nth-child(5) {
+  animation-delay: 240ms;
+}
 
 .code-actions {
   display: flex;
@@ -790,57 +808,112 @@
 /* ---------------------------------------------------------------- keyframes */
 
 @keyframes sky-breathe {
-  from { filter: hue-rotate(0deg) brightness(1); }
-  to { filter: hue-rotate(-8deg) brightness(1.08); }
+  from {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  to {
+    filter: hue-rotate(-8deg) brightness(1.08);
+  }
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 1; }
-  45% { opacity: 1; }
-  50% { opacity: 0.15; }
-  55% { opacity: 1; }
-  70% { opacity: 0.6; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+  55% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.6;
+  }
 }
 
 @keyframes twinkle-soft {
-  from { opacity: 0.35; }
-  to { opacity: 1; }
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes flag-wave {
-  0%, 100% { transform: skewY(0deg) scaleX(1); }
-  50% { transform: skewY(6deg) scaleX(0.9); }
+  0%,
+  100% {
+    transform: skewY(0deg) scaleX(1);
+  }
+  50% {
+    transform: skewY(6deg) scaleX(0.9);
+  }
 }
 
 @keyframes fog-drift {
-  from { transform: translateX(0); }
-  to { transform: translateX(25%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(25%);
+  }
 }
 
 @keyframes ember-rise {
-  0% { transform: translate(0, 0); opacity: 0; }
-  10% { opacity: 0.9; }
-  100% { transform: translate(var(--drift, 40px), -105vh); opacity: 0; }
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(var(--drift, 40px), -105vh);
+    opacity: 0;
+  }
 }
 
 @keyframes crown-float {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
 }
 
 @keyframes shine {
-  0%, 30% { background-position: 100% 0; }
-  70%, 100% { background-position: 0% 0; }
+  0%,
+  30% {
+    background-position: 100% 0;
+  }
+  70%,
+  100% {
+    background-position: 0% 0;
+  }
 }
 
 @keyframes rise-in {
-  from { opacity: 0; transform: translateY(16px); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
 
 @keyframes flip-in {
-  from { opacity: 0; transform: rotateX(90deg); }
+  from {
+    opacity: 0;
+    transform: rotateX(90deg);
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }

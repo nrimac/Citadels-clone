@@ -71,10 +71,23 @@ export class Presenter {
         const c = getCharacter(e.character);
         if (e.murdered) {
           play('murdered');
-          this.banners.push({ character: e.character, title: `The ${c.name}`, subtitle: 'lies murdered — the turn is lost', tone: 'bad', duration: 1700 });
+          this.banners.push({
+            character: e.character,
+            title: `The ${c.name}`,
+            subtitle: 'lies murdered — the turn is lost',
+            tone: 'bad',
+            duration: 1700,
+          });
         } else if (e.seat === you) {
           play('yourTurn');
-          this.banners.push({ character: e.character, title: `You are the ${c.name}`, subtitle: 'It is your turn!', tone: 'gold', duration: 1600, big: true });
+          this.banners.push({
+            character: e.character,
+            title: `You are the ${c.name}`,
+            subtitle: 'It is your turn!',
+            tone: 'gold',
+            duration: 1600,
+            big: true,
+          });
         } else if (e.seat != null) {
           // The spotlight already shows who was called; a bell is enough.
           play('call');
@@ -83,16 +96,34 @@ export class Presenter {
       }
       case 'murder':
         play('murder');
-        this.banners.push({ character: 'assassin', title: `The ${getCharacter(e.target).name} is marked`, subtitle: 'The Assassin strikes from the shadows', tone: 'bad', duration: 1600 });
+        this.banners.push({
+          character: 'assassin',
+          title: `The ${getCharacter(e.target).name} is marked`,
+          subtitle: 'The Assassin strikes from the shadows',
+          tone: 'bad',
+          duration: 1600,
+        });
         break;
       case 'rob':
         play('rob');
-        this.banners.push({ character: 'thief', title: `The ${getCharacter(e.target).name} will be robbed`, subtitle: 'The Thief lies in wait', tone: 'bad', duration: 1500 });
+        this.banners.push({
+          character: 'thief',
+          title: `The ${getCharacter(e.target).name} will be robbed`,
+          subtitle: 'The Thief lies in wait',
+          tone: 'bad',
+          duration: 1500,
+        });
         break;
       case 'robbed':
         play('robbed');
         fx.coins(this.anchor(e.target, 'gold'), this.anchor(e.seat, 'gold'), Math.max(1, e.amount));
-        this.banners.push({ character: 'thief', title: `${e.amount} gold stolen!`, subtitle: `${name(e.seat)} robbed ${name(e.target, { capital: false })}`, tone: 'bad', duration: 1500 });
+        this.banners.push({
+          character: 'thief',
+          title: `${e.amount} gold stolen!`,
+          subtitle: `${name(e.seat)} robbed ${name(e.target, { capital: false })}`,
+          tone: 'bad',
+          duration: 1500,
+        });
         break;
       case 'crown': {
         play('crown');
@@ -119,7 +150,11 @@ export class Presenter {
       case 'draw':
         for (let i = 0; i < e.count; i++) play('cardDraw', { delay: i * 0.1 });
         if (e.seat === you && e.choosing) break; // the choice overlay presents them
-        fx.cards(this.place('deck'), e.seat === you ? FX.fromNode(this.root.querySelector('.me-hand')) : this.anchor(e.seat, 'hand'), e.count);
+        fx.cards(
+          this.place('deck'),
+          e.seat === you ? FX.fromNode(this.root.querySelector('.me-hand')) : this.anchor(e.seat, 'hand'),
+          e.count,
+        );
         break;
       case 'keep':
         play('cardSelect');
@@ -128,7 +163,12 @@ export class Presenter {
       case 'smithy':
         if (e.type === 'smithy') play('anvil');
         else play('architect');
-        fx.cards(this.place('deck'), e.seat === you ? FX.fromNode(this.root.querySelector('.me-hand')) : this.anchor(e.seat, 'hand'), e.count, { delay: 150 });
+        fx.cards(
+          this.place('deck'),
+          e.seat === you ? FX.fromNode(this.root.querySelector('.me-hand')) : this.anchor(e.seat, 'hand'),
+          e.count,
+          { delay: 150 },
+        );
         break;
       case 'build': {
         play('build');
@@ -149,14 +189,27 @@ export class Presenter {
       }
       case 'complete':
         play('complete');
-        this.banners.push({ crown: true, title: e.seat === you ? 'Your city is complete!' : `${name(e.seat)} completed their city`, subtitle: e.first ? 'The game ends after this round' : 'A city fit for a king', tone: 'gold', duration: 2200, big: true });
+        this.banners.push({
+          crown: true,
+          title: e.seat === you ? 'Your city is complete!' : `${name(e.seat)} completed their city`,
+          subtitle: e.first ? 'The game ends after this round' : 'A city fit for a king',
+          tone: 'gold',
+          duration: 2200,
+          big: true,
+        });
         fx.burst(this.anchor(e.seat, 'city'), { count: 24, spread: 110 });
         break;
       case 'exchange':
         play('magic');
         fx.cards(this.anchor(e.seat, 'hand'), this.anchor(e.target, 'hand'), Math.min(4, e.gave || 1));
         fx.cards(this.anchor(e.target, 'hand'), this.anchor(e.seat, 'hand'), Math.min(4, e.got || 1), { delay: 120 });
-        this.banners.push({ character: 'magician', title: 'Hands exchanged!', subtitle: `${name(e.seat)} ⇄ ${name(e.target)}`, tone: 'info', duration: 1500 });
+        this.banners.push({
+          character: 'magician',
+          title: 'Hands exchanged!',
+          subtitle: `${name(e.seat)} ⇄ ${name(e.target)}`,
+          tone: 'info',
+          duration: 1500,
+        });
         break;
       case 'redraw':
         play('magic');
@@ -168,8 +221,16 @@ export class Presenter {
         const rect = before.get(String(e.card.uid));
         const def = getDistrict(e.card.id);
         if (rect) fx.crumble(rect, getComputedStyle(document.documentElement).getPropertyValue(`--${def.suit}`).trim() || '#8a7a66');
-        fx.shake(this.root.querySelector(`.seat[data-seat="${e.target}"]`) ?? (e.target === you ? this.root.querySelector('.me-city') : null));
-        this.banners.push({ character: 'warlord', title: `The ${def.name} falls!`, subtitle: `${name(e.seat)} razed ${e.target === you ? 'your' : `${name(e.target)}’s`} district`, tone: 'bad', duration: 1700 });
+        fx.shake(
+          this.root.querySelector(`.seat[data-seat="${e.target}"]`) ?? (e.target === you ? this.root.querySelector('.me-city') : null),
+        );
+        this.banners.push({
+          character: 'warlord',
+          title: `The ${def.name} falls!`,
+          subtitle: `${name(e.seat)} razed ${e.target === you ? 'your' : `${name(e.target)}’s`} district`,
+          tone: 'bad',
+          duration: 1700,
+        });
         break;
       }
       case 'graveyard':

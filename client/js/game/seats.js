@@ -17,7 +17,9 @@ export function seatCharacterTokens(view, p) {
     const murdered = view.murdered === c.id && (c.revealed || p.seat === view.you);
     tokens.push(
       characterMedallion(c.id, {
-        classes: [murdered ? 'murdered' : '', view.robbed === c.id ? 'robbed' : '', view.turn?.character === c.id ? 'current' : ''].join(' '),
+        classes: [murdered ? 'murdered' : '', view.robbed === c.id ? 'robbed' : '', view.turn?.character === c.id ? 'current' : ''].join(
+          ' ',
+        ),
       }),
     );
   }
@@ -57,17 +59,26 @@ export function updateSeat(el, view, p) {
 
   el.querySelector('.seat-name').textContent = p.name;
   const tags = el.querySelector('.seat-tags');
-  setChildren(tags,
-    p.kind === 'bot' ? h('span', { class: 'tag', title: 'Bot' }, icon('bot'), { easy: 'Squire', normal: 'Knight', hard: 'Lord' }[p.level] ?? 'Bot') : null,
+  setChildren(
+    tags,
+    p.kind === 'bot'
+      ? h('span', { class: 'tag', title: 'Bot' }, icon('bot'), { easy: 'Squire', normal: 'Knight', hard: 'Lord' }[p.level] ?? 'Bot')
+      : null,
     p.autopilot ? h('span', { class: 'tag warn', title: 'A bot is playing for this player' }, icon('bot'), 'Autopilot') : null,
     p.kind === 'human' && !p.connected ? h('span', { class: 'tag warn' }, icon('wifi'), 'Away') : null,
   );
 
   const goal = view.options.cityGoal;
-  setChildren(el.querySelector('.seat-stats'),
+  setChildren(
+    el.querySelector('.seat-stats'),
     statAnchor(p.seat, 'gold', [coin(), h('b', null, String(p.gold))], 'Gold'),
     statAnchor(p.seat, 'hand', [icon('cards'), h('b', null, String(p.handCount))], 'Cards in hand'),
-    h('span', { class: `stat stat-city ${p.complete ? 'done' : ''}`, title: 'Districts built' }, icon('flag'), h('b', null, `${p.city.length}/${goal}`)),
+    h(
+      'span',
+      { class: `stat stat-city ${p.complete ? 'done' : ''}`, title: 'Districts built' },
+      icon('flag'),
+      h('b', null, `${p.city.length}/${goal}`),
+    ),
   );
 
   setChildren(el.querySelector('.seat-chars'), ...seatCharacterTokens(view, p));

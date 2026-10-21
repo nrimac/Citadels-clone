@@ -29,8 +29,18 @@ export class Overlays {
     if (this.current?.key === key) return this.current;
     this.close();
     const panel = h('div', { class: 'overlay-panel' });
-    const peek = h('button', { class: 'overlay-peek btn btn-ghost btn-small', type: 'button' }, icon('eye'), h('span', null, 'Peek at the table'));
-    const restore = h('button', { class: 'overlay-restore btn btn-gold', type: 'button' }, icon('cards'), h('span', null, 'Back to your choice'));
+    const peek = h(
+      'button',
+      { class: 'overlay-peek btn btn-ghost btn-small', type: 'button' },
+      icon('eye'),
+      h('span', null, 'Peek at the table'),
+    );
+    const restore = h(
+      'button',
+      { class: 'overlay-restore btn btn-gold', type: 'button' },
+      icon('cards'),
+      h('span', null, 'Back to your choice'),
+    );
     const el = h('div', { class: 'overlay' }, h('div', { class: 'overlay-dim' }), panel, peek, restore);
     peek.addEventListener('click', () => {
       play('close');
@@ -52,10 +62,10 @@ export class Overlays {
    * Generic card chooser.
    * options: [{ value, el, disabled, note }]
    */
-  chooser(key, { title, subtitle, options, min = 1, max = 1, confirmLabel, onConfirm, cancellable = true, onCancel, extra, autoConfirm = false }) {
+  chooser(key, { title, subtitle, options, min = 1, max = 1, confirmLabel, onConfirm, cancellable = true, onCancel, extra }) {
     return this.show(key, (panel, handle) => {
       const selected = new Set();
-      const confirmBtn = button(typeof confirmLabel === 'function' ? confirmLabel(selected) : confirmLabel ?? 'Confirm', {
+      const confirmBtn = button(typeof confirmLabel === 'function' ? confirmLabel(selected) : (confirmLabel ?? 'Confirm'), {
         variant: 'primary',
         sound: null,
         onClick: () => {
@@ -67,17 +77,27 @@ export class Overlays {
       });
       const refresh = () => {
         confirmBtn.disabled = selected.size < min || selected.size > max;
-        const label = typeof confirmLabel === 'function' ? confirmLabel(selected) : confirmLabel ?? 'Confirm';
+        const label = typeof confirmLabel === 'function' ? confirmLabel(selected) : (confirmLabel ?? 'Confirm');
         confirmBtn.querySelector('span').textContent = label;
-        options.forEach((o) => o.el.classList.toggle('selected', selected.has(o.value)));
+        options.forEach((o) => {
+          o.el.classList.toggle('selected', selected.has(o.value));
+          if (!o.disabled) o.el.setAttribute('aria-pressed', String(selected.has(o.value)));
+        });
       };
       const row = h(
         'div',
         { class: `chooser-row count-${options.length}` },
         options.map((o) => {
-          const wrap = h('div', { class: `chooser-item ${o.disabled ? 'disabled' : ''}` }, o.el, o.note ? h('div', { class: 'chooser-note' }, o.note) : null);
+          const wrap = h(
+            'div',
+            { class: `chooser-item ${o.disabled ? 'disabled' : ''}` },
+            o.el,
+            o.note ? h('div', { class: 'chooser-note' }, o.note) : null,
+          );
           o.el.classList.add(o.disabled ? 'dimmed' : 'playable', 'no-preview');
           if (!o.disabled) {
+            o.el.tabIndex = 0;
+            o.el.setAttribute('role', 'button');
             o.el.addEventListener('click', () => {
               if (selected.has(o.value)) selected.delete(o.value);
               else {
@@ -87,7 +107,16 @@ export class Overlays {
               }
               play('cardSelect');
               refresh();
-              if (autoConfirm && max === 1 && selected.size === 1) confirmBtn.click();
+            });
+            o.el.addEventListener('keydown', (e) => {
+              if (e.key === ' ') {
+                e.preventDefault();
+                o.el.click();
+              } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!selected.has(o.value)) o.el.click();
+                if (!confirmBtn.disabled) confirmBtn.click();
+              }
             });
             o.el.addEventListener('dblclick', () => {
               if (max === 1) {
@@ -122,6 +151,7 @@ export class Overlays {
         ),
       ]);
       refresh();
+      setTimeout(() => panel.querySelector('.chooser-item [tabindex="0"]')?.focus({ preventScroll: true }), 80);
     });
   }
 
@@ -133,10 +163,19 @@ export class Overlays {
         h('p', { class: 'overlay-sub' }, 'Pass the device to'),
         h('h2', { class: 'overlay-title gold-text handoff-name' }, name),
         h('p', { class: 'handoff-note' }, 'Everyone else, avert your eyes — private cards are about to be revealed.'),
-        h('div', { class: 'overlay-actions' }, button(`I am ${name}`, { variant: 'primary', size: 'large', icon: 'eye', onClick: () => {
-          handle.close();
-          onReady();
-        } })),
+        h(
+          'div',
+          { class: 'overlay-actions' },
+          button(`I am ${name}`, {
+            variant: 'primary',
+            size: 'large',
+            icon: 'eye',
+            onClick: () => {
+              handle.close();
+              onReady();
+            },
+          }),
+        ),
       );
     });
   }

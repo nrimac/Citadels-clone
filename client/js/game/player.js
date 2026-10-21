@@ -38,8 +38,18 @@ export class PlayerArea {
     const spectator = view.you == null;
     this.root.classList.toggle('spectating', spectator);
     if (spectator) {
-      setChildren(this.public,
-        h('div', { class: 'public-note' }, icon('eye'), h('span', null, view.phase === 'over' ? 'The game is over.' : 'Public table — private cards are hidden until the next player takes the device.')),
+      setChildren(
+        this.public,
+        h(
+          'div',
+          { class: 'public-note' },
+          icon('eye'),
+          h(
+            'span',
+            null,
+            view.phase === 'over' ? 'The game is over.' : 'Public table — private cards are hidden until the next player takes the device.',
+          ),
+        ),
       );
       return;
     }
@@ -59,10 +69,17 @@ export class PlayerArea {
     this.root.classList.toggle('active', !!active);
     const chars = me.characters.map((c) =>
       characterCard(c.id, {
-        classes: ['mine-char', view.turn?.character === c.id ? 'current' : '', view.murdered === c.id ? 'murdered' : '', view.robbed === c.id ? 'robbed' : '', c.revealed ? 'revealed' : ''].join(' '),
+        classes: [
+          'mine-char',
+          view.turn?.character === c.id ? 'current' : '',
+          view.murdered === c.id ? 'murdered' : '',
+          view.robbed === c.id ? 'robbed' : '',
+          c.revealed ? 'revealed' : '',
+        ].join(' '),
       }),
     );
-    setChildren(this.profile,
+    setChildren(
+      this.profile,
       h(
         'div',
         { class: 'profile-head' },
@@ -74,7 +91,12 @@ export class PlayerArea {
             'div',
             { class: 'name' },
             h('span', null, me.name),
-            h('span', { class: `profile-crown seat-anchor ${view.crown === me.seat ? 'on' : ''}`, dataset: { seat: me.seat, anchor: 'crown' }, title: 'You hold the crown', html: crownSVG() }),
+            h('span', {
+              class: `profile-crown seat-anchor ${view.crown === me.seat ? 'on' : ''}`,
+              dataset: { seat: me.seat, anchor: 'crown' },
+              title: 'You hold the crown',
+              html: crownSVG(),
+            }),
           ),
           h('div', { class: 'sub' }, active ? 'Your move' : 'Waiting'),
         ),
@@ -85,14 +107,19 @@ export class PlayerArea {
         statAnchor(me.seat, 'gold', [coin(), h('b', null, String(me.gold))], 'Your gold'),
         statAnchor(me.seat, 'hand', [icon('cards'), h('b', null, String(me.handCount))], 'Cards in hand'),
       ),
-      h('div', { class: 'profile-chars' }, chars.length ? chars : h('div', { class: 'no-char' }, view.phase === 'draft' ? 'Choosing…' : '—')),
+      h(
+        'div',
+        { class: 'profile-chars' },
+        chars.length ? chars : h('div', { class: 'no-char' }, view.phase === 'draft' ? 'Choosing…' : '—'),
+      ),
     );
   }
 
   _city(view, me) {
     const goal = view.options.cityGoal;
     const suits = new Set(me.city.map((c) => getDistrict(c.id).suit));
-    setChildren(this.cityLabel,
+    setChildren(
+      this.cityLabel,
       h('span', null, 'Your City'),
       h('b', { class: me.complete ? 'done' : '' }, `${me.city.length} / ${goal}`),
       h(
@@ -112,10 +139,17 @@ export class PlayerArea {
     const legal = view.legal?.turn;
     const myTurn = !!legal;
     const buildable = new Set(legal?.build ?? []);
-    setChildren(this.handLabel,
+    setChildren(
+      this.handLabel,
       h('span', null, 'Your Hand'),
       myTurn && view.turn.actionTaken && legal.buildsLeft > 0
-        ? h('em', { class: 'hint' }, buildable.size ? `Click a glowing card to build it${legal.buildsLeft > 1 ? ` (${legal.buildsLeft} builds left)` : ''}` : 'Nothing you can build right now')
+        ? h(
+            'em',
+            { class: 'hint' },
+            buildable.size
+              ? `Click a glowing card to build it${legal.buildsLeft > 1 ? ` (${legal.buildsLeft} builds left)` : ''}`
+              : 'Nothing you can build right now',
+          )
         : null,
     );
     this.hand.classList.toggle('empty', !view.hand.length);
@@ -140,7 +174,7 @@ export class PlayerArea {
       el.tabIndex = can ? 0 : -1;
       const reason = myTurn && view.turn.actionTaken ? legal.blocked?.[uid] : null;
       el.classList.toggle('blocked', !!reason && reason !== 'limit');
-      el.title = can ? `Build for ${getDistrict(el.dataset.previewId).cost} gold` : reason ? BLOCK_REASONS[reason] ?? '' : '';
+      el.title = can ? `Build for ${getDistrict(el.dataset.previewId).cost} gold` : reason ? (BLOCK_REASONS[reason] ?? '') : '';
     }
   }
 }

@@ -108,7 +108,7 @@ export function getView(state, seat = null, { logSize = VIEW_LOG_SIZE } = {}) {
     deckCount: state.deck.length,
     characters: [...state.characters],
     callIndex: state.callIndex,
-    calling: state.phase === PHASE.PLAY ? state.characters[state.callIndex] ?? null : null,
+    calling: state.phase === PHASE.PLAY ? (state.characters[state.callIndex] ?? null) : null,
     murdered: state.murdered,
     robbed: state.robbed,
     revealed: { ...state.revealed },

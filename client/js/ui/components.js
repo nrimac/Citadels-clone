@@ -10,7 +10,10 @@ export function icon(name) {
   return fromHTML(ICONS[name] ?? ICONS.info);
 }
 
-export function button(label, { icon: iconName, variant = '', onClick, sound = 'click', title, disabled, size = '', type = 'button' } = {}) {
+export function button(
+  label,
+  { icon: iconName, variant = '', onClick, sound = 'click', title, disabled, size = '', type = 'button' } = {},
+) {
   const el = h(
     'button',
     { class: `btn ${variant ? `btn-${variant}` : ''} ${size ? `btn-${size}` : ''}`, type, title, disabled },
@@ -38,9 +41,14 @@ export function iconButton(name, { title, onClick, sound = 'click', classes = ''
 export function segmented(options, value, onChange) {
   const el = h('div', { class: 'segmented', role: 'radiogroup' });
   const render = (current) => {
-    setChildren(el,
+    setChildren(
+      el,
       ...options.map((opt) => {
-        const b = h('button', { type: 'button', class: opt.value === current ? 'on' : '', role: 'radio', 'aria-checked': String(opt.value === current) }, opt.label);
+        const b = h(
+          'button',
+          { type: 'button', class: opt.value === current ? 'on' : '', role: 'radio', 'aria-checked': String(opt.value === current) },
+          opt.label,
+        );
         b.addEventListener('click', () => {
           if (opt.value === current) return;
           play('toggle');
@@ -96,7 +104,9 @@ export function openModal({ title, content, actions = [], className = '', dismis
         'div',
         { class: 'modal-header' },
         h('h2', null, title),
-        dismissible ? h('button', { class: 'modal-close', type: 'button', 'aria-label': 'Close', onclick: () => close('dismiss') }, icon('close')) : null,
+        dismissible
+          ? h('button', { class: 'modal-close', type: 'button', 'aria-label': 'Close', onclick: () => close('dismiss') }, icon('close'))
+          : null,
       )
     : null;
   const modal = h(
@@ -135,7 +145,10 @@ export function confirmDialog({ title, message, confirm = 'Confirm', cancel = 'C
     const m = openModal({
       title,
       content: h('p', { class: 'modal-text' }, message),
-      actions: [button(cancel, { variant: 'ghost', onClick: () => finish(false) }), button(confirm, { variant: danger ? 'primary' : 'gold', onClick: () => finish(true) })],
+      actions: [
+        button(cancel, { variant: 'ghost', onClick: () => finish(false) }),
+        button(confirm, { variant: danger ? 'primary' : 'gold', onClick: () => finish(true) }),
+      ],
       onClose: () => {
         if (!done) {
           done = true;
@@ -180,7 +193,8 @@ export function installCardPreview() {
     if (current === `${type}:${id}`) return position(x, y);
     hide();
     current = `${type}:${id}`;
-    const card = type === 'character' ? characterCard(id, { text: true, classes: 'show-text' }) : districtCard(id, { classes: 'show-text' });
+    const card =
+      type === 'character' ? characterCard(id, { text: true, classes: 'show-text' }) : districtCard(id, { classes: 'show-text' });
     tip = h('div', { class: 'preview-tip' }, card);
     document.body.append(tip);
     position(x, y);
@@ -198,7 +212,8 @@ export function installCardPreview() {
     if (e.pointerType !== 'mouse') return;
     const target = e.target.closest?.('[data-preview]');
     // Don't preview cards that are already shown at full size with their text.
-    if (!target || target.closest('.preview-tip') || target.classList.contains('no-preview') || target.closest('.no-preview')) return hide();
+    if (!target || target.closest('.preview-tip') || target.classList.contains('no-preview') || target.closest('.no-preview'))
+      return hide();
     show(target, e.clientX, e.clientY);
   });
   document.addEventListener('pointerdown', hide);

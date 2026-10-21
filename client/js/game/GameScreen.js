@@ -149,8 +149,16 @@ class GameScreen {
     if (s.chat?.length) this.chronicle.updateChat(s.chat, s.room, null);
 
     this.keyHandler = (e) => {
-      if (e.target.closest?.('input, textarea')) return;
-      if (e.key === 'l' || e.key === 'L') this.chronicle.toggle();
+      if (e.target.closest?.('input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
+      const key = e.key.toLowerCase();
+      if (key === 'l') return this.chronicle.toggle();
+      // Turn shortcuts only apply when no dialog or choice is on screen.
+      if (this.overlays.open || document.querySelector('.modal-backdrop')) return;
+      const t = this.view?.legal?.turn;
+      if (!t) return;
+      if (key === 'g' && t.takeGold) this.submit({ type: 'takeGold' });
+      else if (key === 'd' && t.drawCards) this.submit({ type: 'drawCards' });
+      else if (key === 'e' && t.endTurn) this.endTurn();
     };
     window.addEventListener('keydown', this.keyHandler);
     this.tick = setInterval(() => this._timer(), 500);
@@ -183,7 +191,8 @@ class GameScreen {
     const before = first ? new Map() : this.presenter.snapshot();
     this.view = view;
 
-    setChildren(this.roundInfo,
+    setChildren(
+      this.roundInfo,
       h('div', { class: 'round-num' }, h('small', null, 'Round'), h('b', null, String(view.round))),
       h('div', { class: 'round-phase' }, PHASE_LABEL[view.phase] ?? ''),
     );
@@ -198,7 +207,12 @@ class GameScreen {
     this.el.classList.toggle('spectator', view.you == null);
 
     if (first && view.phase !== 'over') {
-      this.banners.push({ title: `Round ${view.round}`, subtitle: view.phase === 'draft' ? 'Choose your characters' : 'The characters are called', tone: 'gold', duration: 1400 });
+      this.banners.push({
+        title: `Round ${view.round}`,
+        subtitle: view.phase === 'draft' ? 'Choose your characters' : 'The characters are called',
+        tone: 'gold',
+        duration: 1400,
+      });
     }
     this.presenter.present(view, events, before);
     this._decisions(view);
@@ -226,7 +240,11 @@ class GameScreen {
     const left = Math.max(0, Math.ceil((v.deadline - Date.now()) / 1000));
     this.timer.hidden = false;
     this.timer.classList.toggle('urgent', left <= 15);
-    setChildren(this.timer, icon('hourglass'), h('span', null, left >= 60 ? `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : `${left}s`));
+    setChildren(
+      this.timer,
+      icon('hourglass'),
+      h('span', null, left >= 60 ? `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : `${left}s`),
+    );
     if (left <= 10 && left > 0 && left !== this.lastTick) play('countdown');
     this.lastTick = left;
   }
@@ -287,8 +305,21 @@ class GameScreen {
     const extra = h(
       'div',
       { class: 'draft-extra' },
-      faceUp.length ? h('div', { class: 'draft-aside' }, h('span', { class: 'label' }, 'Set aside face up'), h('div', { class: 'faceup-row' }, faceUp.map((id) => characterCard(id, { classes: 'discarded tiny' })))) : null,
-      v.draft.faceDownCount ? h('div', { class: 'draft-aside' }, h('span', { class: 'label' }, `${v.draft.faceDownCount} face down`)) : null,
+      faceUp.length
+        ? h(
+            'div',
+            { class: 'draft-aside' },
+            h('span', { class: 'label' }, 'Set aside face up'),
+            h(
+              'div',
+              { class: 'faceup-row' },
+              faceUp.map((id) => characterCard(id, { classes: 'discarded tiny' })),
+            ),
+          )
+        : null,
+      v.draft.faceDownCount
+        ? h('div', { class: 'draft-aside' }, h('span', { class: 'label' }, `${v.draft.faceDownCount} face down`))
+        : null,
     );
     const chars = [...pool].sort((a, b) => getCharacter(a).rank - getCharacter(b).rank);
     this.overlays.chooser('draft', {
@@ -301,7 +332,11 @@ class GameScreen {
       options: chars.map((id) => ({ value: id, el: characterCard(id, { classes: 'choice' }), note: getCharacter(id).text })),
       confirmLabel: (sel) => {
         const id = [...sel][0];
-        return id ? `${picking ? 'Take' : 'Discard'} the ${getCharacter(id).name}` : picking ? 'Choose a character' : 'Choose one to discard';
+        return id
+          ? `${picking ? 'Take' : 'Discard'} the ${getCharacter(id).name}`
+          : picking
+            ? 'Choose a character'
+            : 'Choose one to discard';
       },
       cancellable: false,
       extra,
@@ -338,15 +373,26 @@ class GameScreen {
     this.overlays.show('prompt', (panel, handle) => {
       panel.append(
         h('h2', { class: 'overlay-title gold-text' }, 'The Graveyard'),
-        h('p', { class: 'overlay-sub' }, `The ${getDistrict(card.id).name} was destroyed. Pay ${v.prompt.cost} gold to take it into your hand?`),
-        h('div', { class: 'chooser-row' }, h('div', { class: 'chooser-item' }, districtCard(card, { classes: 'show-text choice no-preview' }))),
+        h(
+          'p',
+          { class: 'overlay-sub' },
+          `The ${getDistrict(card.id).name} was destroyed. Pay ${v.prompt.cost} gold to take it into your hand?`,
+        ),
+        h(
+          'div',
+          { class: 'chooser-row' },
+          h('div', { class: 'chooser-item' }, districtCard(card, { classes: 'show-text choice no-preview' })),
+        ),
         h(
           'div',
           { class: 'overlay-actions' },
-          button('Let it rest', { variant: 'ghost', onClick: () => {
-            handle.close();
-            this.submit({ type: 'graveyard', accept: false });
-          } }),
+          button('Let it rest', {
+            variant: 'ghost',
+            onClick: () => {
+              handle.close();
+              this.submit({ type: 'graveyard', accept: false });
+            },
+          }),
           button(`Pay ${v.prompt.cost} gold`, {
             variant: 'primary',
             icon: 'coins',
@@ -373,12 +419,25 @@ class GameScreen {
         const verb = ability.id === 'murder' ? 'Murder' : ability.id === 'rob' ? 'Rob' : ability.label;
         this.overlays.chooser(`ability:${ability.id}`, {
           title: ability.prompt ?? ability.label,
-          subtitle: ability.id === 'murder' ? 'The murdered character skips their whole turn.' : ability.id === 'rob' ? 'When they are called, all their gold becomes yours.' : '',
+          subtitle:
+            ability.id === 'murder'
+              ? 'The murdered character skips their whole turn.'
+              : ability.id === 'rob'
+                ? 'When they are called, all their gold becomes yours.'
+                : '',
           options: v.characters.map((id) => ({
             value: id,
             el: characterCard(id, { classes: 'choice' }),
             disabled: !options.has(id),
-            note: mine.has(id) ? 'Yours' : faceUp.has(id) ? 'Set aside' : id === v.murdered ? 'Murdered' : !options.has(id) ? 'Not allowed' : null,
+            note: mine.has(id)
+              ? 'Yours'
+              : faceUp.has(id)
+                ? 'Set aside'
+                : id === v.murdered
+                  ? 'Murdered'
+                  : !options.has(id)
+                    ? 'Not allowed'
+                    : null,
           })),
           confirmLabel: (sel) => ([...sel][0] ? `${verb} the ${getCharacter([...sel][0]).name}` : 'Choose a character'),
           onConfirm: ([id]) => submit({ target: id }),
@@ -398,7 +457,13 @@ class GameScreen {
                 { class: 'player-choice' },
                 fromHTML(crestSVG(seat)),
                 h('div', { class: 'pc-name' }, p.name),
-                h('div', { class: 'pc-cards' }, icon('cards'), h('b', null, String(p.handCount)), h('span', null, p.handCount === 1 ? 'card' : 'cards')),
+                h(
+                  'div',
+                  { class: 'pc-cards' },
+                  icon('cards'),
+                  h('b', null, String(p.handCount)),
+                  h('span', null, p.handCount === 1 ? 'card' : 'cards'),
+                ),
               ),
             };
           }),
@@ -492,7 +557,8 @@ class GameScreen {
     if (!skipConfirm && this.view && this.view.phase !== 'over') {
       const ok = await confirmDialog({
         title: 'Leave the game?',
-        message: this.session.kind === 'online' ? 'A bot will take over your seat for the rest of the game.' : 'This game will be abandoned.',
+        message:
+          this.session.kind === 'online' ? 'A bot will take over your seat for the rest of the game.' : 'This game will be abandoned.',
         confirm: 'Leave',
         cancel: 'Stay',
         danger: true,

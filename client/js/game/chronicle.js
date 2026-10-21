@@ -25,7 +25,12 @@ export class Chronicle {
     );
     this.body = h('div', { class: 'chronicle-body' }, this.list, this.chat?.el ?? null);
     append(this.root, [
-      h('div', { class: 'chronicle-head' }, h('h3', { class: 'gold-text' }, 'The Chronicle'), iconButton('close', { title: 'Close', onClick: () => this.toggle(false) })),
+      h(
+        'div',
+        { class: 'chronicle-head' },
+        h('h3', { class: 'gold-text' }, 'The Chronicle'),
+        iconButton('close', { title: 'Close', onClick: () => this.toggle(false) }),
+      ),
       this.tabs,
       this.body,
     ]);
@@ -76,7 +81,9 @@ export class Chronicle {
         h(
           'div',
           { class: `chron-entry tone-${n.tone} ${n.heading ? 'heading' : ''}` },
-          seat != null && !n.heading ? h('span', { class: 'chron-crest' }, fromHTML(crestSVG(seat))) : h('span', { class: 'chron-crest' }, icon('scroll')),
+          seat != null && !n.heading
+            ? h('span', { class: 'chron-crest' }, fromHTML(crestSVG(seat)))
+            : h('span', { class: 'chron-crest' }, icon('scroll')),
           h('span', { class: 'chron-text' }, n.text),
         ),
       );

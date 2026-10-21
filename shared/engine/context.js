@@ -105,9 +105,7 @@ export function makeContext(state, seat) {
       const destroyed = cardDef(state, uid);
       const keeper = destroyed.graveyard
         ? -1
-        : state.players.findIndex(
-            (p, s) => s !== seat && p.gold >= 1 && p.city.some((e) => cardDef(state, e.uid).graveyard),
-          );
+        : state.players.findIndex((p, s) => s !== seat && p.gold >= 1 && p.city.some((e) => cardDef(state, e.uid).graveyard));
       if (keeper >= 0) {
         state.prompt = { type: 'graveyard', seat: keeper, card: uid, cost: 1 };
       } else {

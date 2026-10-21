@@ -25,9 +25,16 @@ export function narrate(event, view) {
   const verb = (seat, mine, theirs) => (you(seat) ? mine : theirs);
   switch (event.type) {
     case 'game-start':
-      return { text: `${name(event.crown)} ${verb(event.crown, 'hold', 'holds')} the crown. First to ${event.cityGoal} districts ends the game.`, tone: 'info' };
+      return {
+        text: `${name(event.crown)} ${verb(event.crown, 'hold', 'holds')} the crown. First to ${event.cityGoal} districts ends the game.`,
+        tone: 'info',
+      };
     case 'round-start':
-      return { text: `Round ${event.round} begins.${event.faceUp?.length ? ` Set aside face up: ${event.faceUp.map(charName).join(', ')}.` : ''}`, tone: 'info', heading: true };
+      return {
+        text: `Round ${event.round} begins.${event.faceUp?.length ? ` Set aside face up: ${event.faceUp.map(charName).join(', ')}.` : ''}`,
+        tone: 'info',
+        heading: true,
+      };
     case 'pick':
       return event.private
         ? { text: `You chose the ${charName(event.private.character)}.`, tone: 'good' }
@@ -45,13 +52,17 @@ export function narrate(event, view) {
     case 'murder-revealed':
       return { text: `${name(event.seat)} ${verb(event.seat, 'were', 'was')} the murdered ${charName(event.character)}.`, tone: 'bad' };
     case 'robbed':
-      return { text: `${name(event.seat)} robbed ${name(event.target, { capital: false })} of ${plural(event.amount, 'gold')}.`, tone: 'bad' };
+      return {
+        text: `${name(event.seat)} robbed ${name(event.target, { capital: false })} of ${plural(event.amount, 'gold')}.`,
+        tone: 'bad',
+      };
     case 'crown':
       return { text: `${name(event.seat)} ${verb(event.seat, 'take', 'takes')} the crown.`, tone: 'gold' };
     case 'take-gold':
       return { text: `${name(event.seat)} took ${plural(event.amount, 'gold')}.`, tone: 'gold' };
     case 'gold':
-      if (event.source === 'merchant') return { text: `${name(event.seat)} earned ${event.amount} extra gold as the Merchant.`, tone: 'gold' };
+      if (event.source === 'merchant')
+        return { text: `${name(event.seat)} earned ${event.amount} extra gold as the Merchant.`, tone: 'gold' };
       if (event.source === 'laboratory') return { text: `${name(event.seat)} turned a card into gold in the Laboratory.`, tone: 'gold' };
       return { text: `${name(event.seat)} gained ${plural(event.amount, 'gold')}.`, tone: 'gold' };
     case 'income':
@@ -65,10 +76,18 @@ export function narrate(event, view) {
     case 'bonus-cards':
       return { text: `${name(event.seat)} drew ${plural(event.count, 'extra card')} as the Architect.`, tone: 'info' };
     case 'build':
-      return { text: `${name(event.seat)} built the ${cardName(event.card)} for ${plural(event.cost, 'gold')}.`, tone: 'good', card: event.card };
+      return {
+        text: `${name(event.seat)} built the ${cardName(event.card)} for ${plural(event.cost, 'gold')}.`,
+        tone: 'good',
+        card: event.card,
+      };
     case 'complete':
       return event.first
-        ? { text: `${name(event.seat)} completed ${verb(event.seat, 'your', 'their')} city first! The game ends after this round.`, tone: 'gold', heading: true }
+        ? {
+            text: `${name(event.seat)} completed ${verb(event.seat, 'your', 'their')} city first! The game ends after this round.`,
+            tone: 'gold',
+            heading: true,
+          }
         : { text: `${name(event.seat)} also completed ${verb(event.seat, 'your', 'their')} city.`, tone: 'gold' };
     case 'murder':
       return { text: `The Assassin marks the ${charName(event.target)} for death.`, tone: 'bad' };
@@ -79,7 +98,11 @@ export function narrate(event, view) {
     case 'redraw':
       return { text: `${name(event.seat)} discarded and redrew ${plural(event.count, 'card')}.`, tone: 'info' };
     case 'destroy':
-      return { text: `${name(event.seat)} destroyed ${you(event.target) ? 'your' : `${name(event.target)}’s`} ${cardName(event.card)}.`, tone: 'bad', card: event.card };
+      return {
+        text: `${name(event.seat)} destroyed ${you(event.target) ? 'your' : `${name(event.target)}’s`} ${cardName(event.card)}.`,
+        tone: 'bad',
+        card: event.card,
+      };
     case 'graveyard':
       return event.accepted
         ? { text: `${name(event.seat)} rescued the ${cardName(event.card)} from the Graveyard.`, tone: 'info' }

@@ -96,5 +96,18 @@ export function characterValue(view, player, charId, ctx = {}) {
       break;
   }
   if (player.city.length === goal - 1) v += def.protectsCity ? 3 : 0;
+
+  if (ctx.aware) {
+    // Endgame awareness: stop a rival who is about to finish, protect yourself.
+    const closing = opponents.filter((p) => !p.complete && p.city.length >= goal - 1);
+    if (closing.length) {
+      if (charId === 'assassin') v += 2;
+      if (charId === 'warlord') v += 2.5;
+    }
+    if (player.city.length >= goal - 2 && def.protectsCity) v += 1.5;
+    // Being far ahead makes you the obvious target: prefer quieter characters.
+    const lead = cityPoints(player) - Math.max(0, ...opponents.map(cityPoints));
+    if (lead > 6 && (charId === 'king' || charId === 'merchant')) v -= 1;
+  }
   return v;
 }

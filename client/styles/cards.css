@@ -12,8 +12,14 @@
   border-radius: calc(var(--cw) * 0.075);
   font-size: calc(var(--cw) / 11);
   line-height: 1.15;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(0, 0, 0, 0.35);
-  transition: transform 260ms var(--ease-out), box-shadow 260ms, filter 260ms, opacity 260ms;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.45),
+    0 8px 18px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 260ms var(--ease-out),
+    box-shadow 260ms,
+    filter 260ms,
+    opacity 260ms;
   outline: none;
   transform-style: preserve-3d;
 }
@@ -26,11 +32,31 @@
 
 /* ---------------------------------------------------------------- districts */
 
-.suit-noble { --suit: var(--noble); --suit-light: #ffe08a; --suit-dark: #6e4d0c; }
-.suit-religious { --suit: var(--religious); --suit-light: #9cc7ee; --suit-dark: #1a3363; }
-.suit-trade { --suit: var(--trade); --suit-light: #a6dba0; --suit-dark: #1a4422; }
-.suit-military { --suit: var(--military); --suit-light: #f4a08a; --suit-dark: #5c140f; }
-.suit-unique { --suit: var(--unique); --suit-light: #d2b8f4; --suit-dark: #34195a; }
+.suit-noble {
+  --suit: var(--noble);
+  --suit-light: #ffe08a;
+  --suit-dark: #6e4d0c;
+}
+.suit-religious {
+  --suit: var(--religious);
+  --suit-light: #9cc7ee;
+  --suit-dark: #1a3363;
+}
+.suit-trade {
+  --suit: var(--trade);
+  --suit-light: #a6dba0;
+  --suit-dark: #1a4422;
+}
+.suit-military {
+  --suit: var(--military);
+  --suit-light: #f4a08a;
+  --suit-dark: #5c140f;
+}
+.suit-unique {
+  --suit: var(--unique);
+  --suit-light: #d2b8f4;
+  --suit-dark: #34195a;
+}
 
 .card.district {
   background: linear-gradient(155deg, var(--suit-light) 0%, var(--suit) 38%, var(--suit-dark) 100%);
@@ -53,7 +79,9 @@
   height: 54%;
   border-radius: calc(var(--cw) * 0.04);
   overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(90, 58, 8, 0.75), 0 2px 4px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(90, 58, 8, 0.75),
+    0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
 .card.district .card-name {
@@ -133,19 +161,33 @@
 
 /* ---------------------------------------------------------------- characters */
 
-.char-assassin { --accent: #9b4be0; }
-.char-thief { --accent: #5fb0a8; }
-.char-magician { --accent: #6b8cff; }
-.char-king { --accent: #f2c14a; }
-.char-bishop { --accent: #6aa0f0; }
-.char-merchant { --accent: #5fc06c; }
-.char-architect { --accent: #f09a4a; }
-.char-warlord { --accent: #ee5544; }
+.char-assassin {
+  --accent: #9b4be0;
+}
+.char-thief {
+  --accent: #5fb0a8;
+}
+.char-magician {
+  --accent: #6b8cff;
+}
+.char-king {
+  --accent: #f2c14a;
+}
+.char-bishop {
+  --accent: #6aa0f0;
+}
+.char-merchant {
+  --accent: #5fc06c;
+}
+.char-architect {
+  --accent: #f09a4a;
+}
+.char-warlord {
+  --accent: #ee5544;
+}
 
 .card.character {
-  background:
-    var(--noise),
-    linear-gradient(180deg, #3b2a1d 0%, #1a110a 100%);
+  background: var(--noise), linear-gradient(180deg, #3b2a1d 0%, #1a110a 100%);
   border: 1px solid rgba(226, 177, 60, 0.7);
 }
 
@@ -157,7 +199,9 @@
   bottom: 17%;
   border-radius: calc(var(--cw) * 0.05) calc(var(--cw) * 0.05) calc(var(--cw) * 0.02) calc(var(--cw) * 0.02);
   overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(248, 220, 138, 0.6), inset 0 0 12px rgba(0, 0, 0, 0.6);
+  box-shadow:
+    0 0 0 1px rgba(248, 220, 138, 0.6),
+    inset 0 0 12px rgba(0, 0, 0, 0.6);
 }
 
 .card.character .card-name {
@@ -231,13 +275,19 @@
 .card.playable:hover,
 .card.playable:focus-visible {
   transform: translateY(-12px) scale(1.04);
-  box-shadow: 0 0 0 2px var(--gold-light), 0 0 22px rgba(226, 177, 60, 0.6), 0 18px 30px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 0 2px var(--gold-light),
+    0 0 22px rgba(226, 177, 60, 0.6),
+    0 18px 30px rgba(0, 0, 0, 0.5);
   z-index: 5;
 }
 
 .card.selected {
   transform: translateY(-16px);
-  box-shadow: 0 0 0 3px var(--gold-light), 0 0 28px rgba(248, 220, 138, 0.85), 0 18px 30px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 0 0 3px var(--gold-light),
+    0 0 28px rgba(248, 220, 138, 0.85),
+    0 18px 30px rgba(0, 0, 0, 0.5);
 }
 
 .card.dimmed {
@@ -282,8 +332,14 @@
   border-radius: 50%;
   border: 2px solid #c8901f;
   background: #1a110a;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(0, 0, 0, 0.6);
-  transition: transform 260ms var(--ease-out), box-shadow 260ms, filter 260ms, opacity 260ms;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+  transition:
+    transform 260ms var(--ease-out),
+    box-shadow 260ms,
+    filter 260ms,
+    opacity 260ms;
 }
 
 .medallion-art {

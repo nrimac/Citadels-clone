@@ -30,7 +30,8 @@ export function districtCard(card, { text = 'auto', classes = '' } = {}) {
     h('div', { class: 'card-gem' }, gem(def.suit)),
     h('div', { class: 'card-name' }, h('span', null, def.name)),
   );
-  if (def.points && def.points !== def.cost) el.append(h('div', { class: 'card-points', title: `Worth ${def.points} points` }, `★${def.points}`));
+  if (def.points && def.points !== def.cost)
+    el.append(h('div', { class: 'card-points', title: `Worth ${def.points} points` }, `★${def.points}`));
   if (def.text && text !== 'none') el.append(h('div', { class: 'card-text' }, def.text));
   return el;
 }
@@ -72,7 +73,11 @@ export function characterMedallion(id, { classes = '', title } = {}) {
 }
 
 export function hiddenMedallion(classes = '') {
-  return h('div', { class: `medallion hidden ${classes}`, title: 'Not yet revealed' }, h('div', { class: 'medallion-art' }, h('span', { class: 'medallion-q' }, '?')));
+  return h(
+    'div',
+    { class: `medallion hidden ${classes}`, title: 'Not yet revealed' },
+    h('div', { class: 'medallion-art' }, h('span', { class: 'medallion-q' }, '?')),
+  );
 }
 
 export function cardBack(classes = '') {

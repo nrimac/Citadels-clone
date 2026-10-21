@@ -50,7 +50,14 @@ registerScreen('online', (app, params = {}) => {
   let pendingAction = null;
 
   const nameInput = h('input', { class: 'input', maxlength: '20', placeholder: 'Your name', value: settings.get('name') || '' });
-  const codeInput = h('input', { class: 'input code', maxlength: String(ROOM_CODE_LENGTH), placeholder: '•••••', value: params.code ? normalizeCode(params.code) : '', autocomplete: 'off', spellcheck: 'false' });
+  const codeInput = h('input', {
+    class: 'input code',
+    maxlength: String(ROOM_CODE_LENGTH),
+    placeholder: '•••••',
+    value: params.code ? normalizeCode(params.code) : '',
+    autocomplete: 'off',
+    spellcheck: 'false',
+  });
   codeInput.addEventListener('input', () => {
     codeInput.value = normalizeCode(codeInput.value);
   });
@@ -78,12 +85,18 @@ registerScreen('online', (app, params = {}) => {
   codeInput.addEventListener('keydown', (e) => e.key === 'Enter' && join());
 
   function renderEntry() {
-    setChildren(panel,
+    setChildren(
+      panel,
       h(
         'header',
         { class: 'menu-header' },
         iconButton('back', { title: 'Back', onClick: () => app.go('title') }),
-        h('div', null, h('h2', { class: 'gold-text' }, 'Play Online'), h('p', { class: 'menu-sub' }, 'Host a table and share the friend code, or join a friend’s table.')),
+        h(
+          'div',
+          null,
+          h('h2', { class: 'gold-text' }, 'Play Online'),
+          h('p', { class: 'menu-sub' }, 'Host a table and share the friend code, or join a friend’s table.'),
+        ),
         status,
       ),
       h('div', { class: 'field' }, h('label', null, 'Your name'), nameInput),
@@ -133,7 +146,10 @@ registerScreen('online', (app, params = {}) => {
           ? h('span', { class: 'seat-hint' }, LEVEL_OPTIONS.find((l) => l.value === s.level)?.label ?? 'Bot')
           : h('span', { class: `seat-hint ${s.connected ? 'online' : 'away'}` }, s.connected ? 'Ready' : 'Reconnecting…'),
         isHost && s.id !== room.you
-          ? iconButton('close', { title: s.kind === 'bot' ? 'Remove bot' : 'Remove player', onClick: () => client.send({ t: C.REMOVE_SEAT, seatId: s.id }) })
+          ? iconButton('close', {
+              title: s.kind === 'bot' ? 'Remove bot' : 'Remove player',
+              onClick: () => client.send({ t: C.REMOVE_SEAT, seatId: s.id }),
+            })
           : h('span'),
       ),
     );
@@ -151,29 +167,61 @@ registerScreen('online', (app, params = {}) => {
             'div',
             { class: 'seat-actions' },
             segmented(LEVEL_OPTIONS, botLevel, (v) => (botLevel = v)),
-            button('Add Bot', { icon: 'bot', size: 'small', disabled: room.seats.length >= room.maxSeats, onClick: () => client.send({ t: C.ADD_BOT, level: botLevel }) }),
+            button('Add Bot', {
+              icon: 'bot',
+              size: 'small',
+              disabled: room.seats.length >= room.maxSeats,
+              onClick: () => client.send({ t: C.ADD_BOT, level: botLevel }),
+            }),
           ),
           h('div', { class: 'ornament' }, 'Rules'),
-          optionRow('City size', segmented(CITY_GOAL_CHOICES.map((n) => ({ value: n, label: `${n} districts` })), room.settings.cityGoal, (v) => sendSettings({ cityGoal: v }))),
-          optionRow('Bot speed', segmented(PACE_OPTIONS, room.settings.pacing, (v) => sendSettings({ pacing: v }))),
-          optionRow('Turn timer', segmented(TIMER_OPTIONS, room.settings.turnTimeout, (v) => sendSettings({ turnTimeout: v }))),
+          optionRow(
+            'City size',
+            segmented(
+              CITY_GOAL_CHOICES.map((n) => ({ value: n, label: `${n} districts` })),
+              room.settings.cityGoal,
+              (v) => sendSettings({ cityGoal: v }),
+            ),
+          ),
+          optionRow(
+            'Bot speed',
+            segmented(PACE_OPTIONS, room.settings.pacing, (v) => sendSettings({ pacing: v })),
+          ),
+          optionRow(
+            'Turn timer',
+            segmented(TIMER_OPTIONS, room.settings.turnTimeout, (v) => sendSettings({ turnTimeout: v })),
+          ),
         )
       : h(
           'div',
           { class: 'lobby-rules' },
           h('div', { class: 'ornament' }, 'Rules'),
-          h('p', null, `${room.settings.cityGoal} districts complete a city · ${PACE_OPTIONS.find((p) => p.value === room.settings.pacing)?.label} bots · ${TIMER_OPTIONS.find((t) => t.value === room.settings.turnTimeout)?.label ?? ''} turn timer`),
+          h(
+            'p',
+            null,
+            `${room.settings.cityGoal} districts complete a city · ${PACE_OPTIONS.find((p) => p.value === room.settings.pacing)?.label} bots · ${TIMER_OPTIONS.find((t) => t.value === room.settings.turnTimeout)?.label ?? ''} turn timer`,
+          ),
         );
 
     if (!chatView) chatView = chatPanel({ onSend: (text) => client.send({ t: C.CHAT, text }) });
     chatView.update(chat, room);
 
-    setChildren(panel,
+    setChildren(
+      panel,
       h(
         'header',
         { class: 'menu-header' },
         iconButton('exit', { title: 'Leave table', onClick: () => client.send({ t: C.LEAVE }) }),
-        h('div', null, h('h2', { class: 'gold-text' }, `${room.seats.find((s) => s.host)?.name ?? 'The'}’s Table`), h('p', { class: 'menu-sub' }, isHost ? 'Share the friend code. Start when everyone is seated.' : 'Waiting for the host to begin…')),
+        h(
+          'div',
+          null,
+          h('h2', { class: 'gold-text' }, `${room.seats.find((s) => s.host)?.name ?? 'The'}’s Table`),
+          h(
+            'p',
+            { class: 'menu-sub' },
+            isHost ? 'Share the friend code. Start when everyone is seated.' : 'Waiting for the host to begin…',
+          ),
+        ),
         status,
       ),
       h(
@@ -186,12 +234,21 @@ registerScreen('online', (app, params = {}) => {
             'div',
             { class: 'friend-code' },
             h('span', { class: 'label' }, 'Friend code'),
-            h('div', { class: 'code-letters' }, room.code.split('').map((c) => h('span', null, c))),
+            h(
+              'div',
+              { class: 'code-letters' },
+              room.code.split('').map((c) => h('span', null, c)),
+            ),
             h(
               'div',
               { class: 'code-actions' },
               button('Copy code', { icon: 'copy', size: 'small', variant: 'ghost', onClick: () => copy(room.code, 'Code') }),
-              button('Copy invite link', { icon: 'link', size: 'small', variant: 'ghost', onClick: () => copy(inviteLink(room.code), 'Invite link') }),
+              button('Copy invite link', {
+                icon: 'link',
+                size: 'small',
+                variant: 'ghost',
+                onClick: () => copy(inviteLink(room.code), 'Invite link'),
+              }),
             ),
           ),
           h('div', { class: 'ornament' }, `Seats · ${room.seats.length}/${room.maxSeats}`),
@@ -204,7 +261,13 @@ registerScreen('online', (app, params = {}) => {
         'div',
         { class: 'menu-footer' },
         isHost
-          ? button(canStart ? 'Begin the Game' : `Need ${room.minSeats} players`, { variant: 'primary', size: 'large', icon: 'play', disabled: !canStart, onClick: () => client.send({ t: C.START }) })
+          ? button(canStart ? 'Begin the Game' : `Need ${room.minSeats} players`, {
+              variant: 'primary',
+              size: 'large',
+              icon: 'play',
+              disabled: !canStart,
+              onClick: () => client.send({ t: C.START }),
+            })
           : h('div', { class: 'waiting-note' }, h('span', { class: 'spinner' }), me ? `Seated as ${me.name}` : ''),
       ),
     );
@@ -221,7 +284,11 @@ registerScreen('online', (app, params = {}) => {
   function renderStatus() {
     const s = client.status;
     status.className = `connection-status ${s}`;
-    setChildren(status, icon('wifi'), h('span', null, s === 'open' ? 'Connected' : s === 'connecting' ? 'Connecting…' : 'Offline — retrying'));
+    setChildren(
+      status,
+      icon('wifi'),
+      h('span', null, s === 'open' ? 'Connected' : s === 'connecting' ? 'Connecting…' : 'Offline — retrying'),
+    );
   }
 
   function onRoom(room) {
