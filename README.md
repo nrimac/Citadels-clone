@@ -21,7 +21,7 @@ Every illustration is hand-built SVG and every sound (including the music) is sy
   - *Play Online*: host a table, share the 5-letter friend code or an invite link (`/join/CODE`), fill empty seats with bots, chat, and rematch. Refreshing or briefly losing connection returns you to your seat; if you're gone too long (or idle past the optional turn timer) a bot plays for you until you're back.
 - **Bots in three temperaments** — Squire (easy), Knight (normal) and Lord (hard). Bots only ever see their own view of the game, exactly like a human. Lords think ahead: before choosing a character they imagine dozens of possible hidden hands and character assignments consistent with what they've seen, play the round out in their head, and take the most promising option (in testing they win about 85–90% of games against a table of Knights).
 - **Art & sound**: illustrated characters and districts, an animated night skyline with parallax, flying coins and cards, crumbling districts, banners and confetti; synthesized coin clinks, card flicks, church bells, brass fanfares and a generative lute-and-recorder soundtrack.
-- **Quality of life**: a narrated chronicle of every move, rules reference built from the game data, card previews on hover, keyboard shortcuts (`G` gold, `D` draw, `E` end turn, `L` chronicle), volume controls and a reduced-motion mode. Works on phones too.
+- **Quality of life**: a narrated chronicle of every move, rules reference built from the game data, card previews on hover (or long-press on touch screens), keyboard shortcuts (`G` gold, `D` draw, `E` end turn, `L` chronicle), volume controls and a reduced-motion mode. Works on phones too.
 
 ## Running it
 

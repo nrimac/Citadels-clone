@@ -208,15 +208,63 @@ export function installCardPreview() {
     tip.style.left = `${Math.max(8, left)}px`;
     tip.style.top = `${top}px`;
   };
+  const previewable = (el) => {
+    const target = el?.closest?.('[data-preview]');
+    // Don't preview cards that are already shown at full size with their text.
+    if (!target || target.closest('.preview-tip') || target.classList.contains('no-preview') || target.closest('.no-preview')) return null;
+    return target;
+  };
   document.addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse') return;
-    const target = e.target.closest?.('[data-preview]');
-    // Don't preview cards that are already shown at full size with their text.
-    if (!target || target.closest('.preview-tip') || target.classList.contains('no-preview') || target.closest('.no-preview'))
-      return hide();
+    const target = previewable(e.target);
+    if (!target) return hide();
     show(target, e.clientX, e.clientY);
   });
-  document.addEventListener('pointerdown', hide);
+
+  // Touch: press and hold a card to read it; the click that follows is swallowed
+  // so a long-press never builds or selects anything by accident.
+  let holdTimer = null;
+  let holdStart = null;
+  let held = false;
+  document.addEventListener('pointerdown', (e) => {
+    hide();
+    held = false;
+    clearTimeout(holdTimer);
+    if (e.pointerType === 'mouse') return;
+    const target = previewable(e.target);
+    if (!target) return;
+    const { clientX, clientY } = e;
+    holdStart = { x: clientX, y: clientY };
+    holdTimer = setTimeout(() => {
+      held = true;
+      show(target, clientX, clientY - 120);
+      navigator.vibrate?.(12);
+    }, 450);
+  });
+  const release = () => {
+    clearTimeout(holdTimer);
+    if (held) setTimeout(hide, 900);
+  };
+  document.addEventListener('pointerup', release);
+  document.addEventListener('pointercancel', release);
+  document.addEventListener('pointermove', (e) => {
+    // A finger that wanders off is scrolling, not pressing.
+    if (e.pointerType === 'mouse' || held || !holdStart) return;
+    if (Math.hypot(e.clientX - holdStart.x, e.clientY - holdStart.y) > 10) clearTimeout(holdTimer);
+  });
+  document.addEventListener(
+    'click',
+    (e) => {
+      if (!held) return;
+      held = false;
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    true,
+  );
+  document.addEventListener('contextmenu', (e) => {
+    if (previewable(e.target)) e.preventDefault();
+  });
   window.addEventListener('blur', hide);
   return hide;
 }
