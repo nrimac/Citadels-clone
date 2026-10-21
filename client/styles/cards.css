@@ -1,0 +1,401 @@
+/* ==========================================================================
+   Cards: districts, characters, backs, medallions and miniatures.
+   Everything scales from --cw (card width).
+   ========================================================================== */
+
+.card {
+  --cw: 110px;
+  position: relative;
+  flex: none;
+  width: var(--cw);
+  height: calc(var(--cw) * 1.4);
+  border-radius: calc(var(--cw) * 0.075);
+  font-size: calc(var(--cw) / 11);
+  line-height: 1.15;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(0, 0, 0, 0.35);
+  transition: transform 260ms var(--ease-out), box-shadow 260ms, filter 260ms, opacity 260ms;
+  outline: none;
+  transform-style: preserve-3d;
+}
+
+.card svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------- districts */
+
+.suit-noble { --suit: var(--noble); --suit-light: #ffe08a; --suit-dark: #6e4d0c; }
+.suit-religious { --suit: var(--religious); --suit-light: #9cc7ee; --suit-dark: #1a3363; }
+.suit-trade { --suit: var(--trade); --suit-light: #a6dba0; --suit-dark: #1a4422; }
+.suit-military { --suit: var(--military); --suit-light: #f4a08a; --suit-dark: #5c140f; }
+.suit-unique { --suit: var(--unique); --suit-light: #d2b8f4; --suit-dark: #34195a; }
+
+.card.district {
+  background: linear-gradient(155deg, var(--suit-light) 0%, var(--suit) 38%, var(--suit-dark) 100%);
+}
+
+.card.district::before {
+  content: '';
+  position: absolute;
+  inset: 4.5%;
+  border-radius: calc(var(--cw) * 0.05);
+  background: var(--noise), radial-gradient(ellipse at 50% 30%, #fbf2da 0%, #ecd9ad 70%, #d6bb80 100%);
+  box-shadow: inset 0 0 calc(var(--cw) * 0.08) rgba(122, 82, 18, 0.5);
+}
+
+.card.district .card-art {
+  position: absolute;
+  top: 8%;
+  left: 8%;
+  right: 8%;
+  height: 54%;
+  border-radius: calc(var(--cw) * 0.04);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(90, 58, 8, 0.75), 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.card.district .card-name {
+  position: absolute;
+  top: 64.5%;
+  left: 6%;
+  right: 6%;
+  display: grid;
+  place-items: center;
+  min-height: 12%;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1.12em;
+  letter-spacing: 0.02em;
+  color: var(--ink-dark);
+  text-align: center;
+  line-height: 1;
+}
+
+.card.district .card-name span {
+  padding: 0.25em 0.5em;
+  border-top: 1px solid rgba(138, 93, 20, 0.45);
+  border-bottom: 1px solid rgba(138, 93, 20, 0.45);
+}
+
+.card .card-text {
+  display: none;
+  position: absolute;
+  top: 78%;
+  bottom: 6%;
+  left: 9%;
+  right: 9%;
+  font-size: 0.74em;
+  font-style: italic;
+  line-height: 1.12;
+  color: var(--ink-dark-dim);
+  text-align: center;
+  overflow: hidden;
+}
+
+.card.show-text .card-text {
+  display: block;
+}
+
+.card .card-cost {
+  position: absolute;
+  top: 1.5%;
+  left: 1.5%;
+  width: 28%;
+  z-index: 2;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+.card .card-gem {
+  position: absolute;
+  top: 2.5%;
+  right: 2.5%;
+  width: 21%;
+  z-index: 2;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+.card .card-points {
+  position: absolute;
+  right: 6%;
+  top: 54%;
+  z-index: 2;
+  padding: 0.1em 0.4em;
+  border-radius: 1em;
+  background: linear-gradient(180deg, #ffe7a0, #c8901f);
+  color: #3a2408;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.8em;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------------------------------------------------------------- characters */
+
+.char-assassin { --accent: #9b4be0; }
+.char-thief { --accent: #5fb0a8; }
+.char-magician { --accent: #6b8cff; }
+.char-king { --accent: #f2c14a; }
+.char-bishop { --accent: #6aa0f0; }
+.char-merchant { --accent: #5fc06c; }
+.char-architect { --accent: #f09a4a; }
+.char-warlord { --accent: #ee5544; }
+
+.card.character {
+  background:
+    var(--noise),
+    linear-gradient(180deg, #3b2a1d 0%, #1a110a 100%);
+  border: 1px solid rgba(226, 177, 60, 0.7);
+}
+
+.card.character .card-art {
+  position: absolute;
+  top: 4.5%;
+  left: 5.5%;
+  right: 5.5%;
+  bottom: 17%;
+  border-radius: calc(var(--cw) * 0.05) calc(var(--cw) * 0.05) calc(var(--cw) * 0.02) calc(var(--cw) * 0.02);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(248, 220, 138, 0.6), inset 0 0 12px rgba(0, 0, 0, 0.6);
+}
+
+.card.character .card-name {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 3.5%;
+  height: 12%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1.2em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.card.character .card-name span {
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.9));
+}
+
+.card.character .card-rank {
+  position: absolute;
+  top: 1.5%;
+  left: 1.5%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 25%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #fff1b8, #e2b13c 50%, #8a5d14);
+  border: 1px solid #5a3a08;
+  color: #3a2408;
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 1.05em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.card.character .card-text {
+  top: auto;
+  bottom: 17%;
+  left: 5.5%;
+  right: 5.5%;
+  padding: 0.5em 0.6em;
+  background: linear-gradient(180deg, transparent, rgba(10, 6, 3, 0.92) 30%);
+  color: #f4e9cf;
+  font-style: normal;
+  font-size: 0.72em;
+}
+
+/* ---------------------------------------------------------------- backs */
+
+.card.back {
+  background: #121a3c;
+  border: 1px solid rgba(226, 177, 60, 0.6);
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------- interaction states */
+
+.card.playable {
+  cursor: pointer;
+}
+
+.card.playable:hover,
+.card.playable:focus-visible {
+  transform: translateY(-12px) scale(1.04);
+  box-shadow: 0 0 0 2px var(--gold-light), 0 0 22px rgba(226, 177, 60, 0.6), 0 18px 30px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.card.selected {
+  transform: translateY(-16px);
+  box-shadow: 0 0 0 3px var(--gold-light), 0 0 28px rgba(248, 220, 138, 0.85), 0 18px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card.dimmed {
+  filter: grayscale(0.55) brightness(0.7);
+}
+
+.card.blocked {
+  filter: grayscale(0.35) brightness(0.82);
+}
+
+.card.discarded {
+  filter: grayscale(1) brightness(0.55);
+}
+
+.card .ribbon {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 44%;
+  z-index: 3;
+  padding: 0.35em 0;
+  text-align: center;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.9em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff3cf;
+  background: linear-gradient(180deg, #b0302a, #6a120e);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  transform: rotate(-8deg);
+}
+
+/* ---------------------------------------------------------------- medallions */
+
+.medallion {
+  --md: 44px;
+  position: relative;
+  flex: none;
+  width: var(--md);
+  height: var(--md);
+  border-radius: 50%;
+  border: 2px solid #c8901f;
+  background: #1a110a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+  transition: transform 260ms var(--ease-out), box-shadow 260ms, filter 260ms, opacity 260ms;
+}
+
+.medallion-art {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.medallion-art svg {
+  position: absolute;
+  width: 170%;
+  height: 170%;
+  left: -35%;
+  top: -22%;
+}
+
+.medallion.hidden {
+  border-color: rgba(200, 144, 31, 0.55);
+  border-style: dashed;
+}
+
+.medallion.hidden .medallion-art {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, #2a3a78, #0d1330);
+}
+
+.medallion-q {
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: calc(var(--md) * 0.5);
+  color: var(--gold);
+  text-shadow: 0 1px 3px #000;
+}
+
+.medallion-rank {
+  position: absolute;
+  right: -5px;
+  bottom: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 3px;
+  border-radius: 9px;
+  background: radial-gradient(circle at 40% 30%, #fff1b8, #c8901f);
+  border: 1px solid #5a3a08;
+  color: #3a2408;
+  font: 900 9px/16px var(--font-title);
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- miniatures */
+
+.mini-district {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 40px;
+  border-radius: 5px;
+  border: 2px solid var(--suit);
+  background: var(--suit-dark);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  transition: transform 200ms var(--ease-out);
+}
+
+.mini-district:hover {
+  transform: translateY(-3px) scale(1.08);
+  z-index: 2;
+}
+
+.mini-art {
+  position: absolute;
+  inset: 0;
+}
+
+.mini-art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.mini-cost {
+  position: absolute;
+  left: 1px;
+  bottom: 1px;
+  min-width: 13px;
+  height: 13px;
+  border-radius: 7px;
+  background: radial-gradient(circle at 40% 30%, #fff1b8, #c8901f);
+  color: #3a2408;
+  font: 700 9px/13px var(--font-title);
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.coin {
+  display: inline-block;
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: -0.28em;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+}
+
+.crown-emblem {
+  width: 30px;
+  height: 22px;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+}
+
+.crest {
+  width: 30px;
+  height: 34px;
+  flex: none;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+}
