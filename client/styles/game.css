@@ -1033,10 +1033,12 @@
 .me-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   padding: 12px;
   overflow-y: auto;
   min-height: 0;
+  /* The player's area sets the row height; long action lists scroll instead. */
+  contain: size;
 }
 
 .actions-title {
@@ -1068,8 +1070,25 @@
 
 .actions-pair {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 6px;
+}
+
+.actions-pair .btn {
+  flex-direction: column;
+  justify-content: center !important;
+  gap: 3px;
+  min-height: 62px !important;
+  padding: 0.4em 0.5em;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.15;
+  font-size: 0.74rem;
+}
+
+.actions-pair .btn .icon {
+  width: 22px;
+  height: 22px;
 }
 
 .actions-pair .btn,
@@ -1090,8 +1109,12 @@
 }
 
 .actions-list .btn {
-  min-height: 38px;
-  font-size: 0.76rem;
+  white-space: normal;
+  text-align: left;
+  min-height: 34px;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  font-size: 0.74rem;
 }
 
 .actions-hint {
@@ -1102,8 +1125,12 @@
 }
 
 .actions-end {
-  margin-top: auto;
-  padding-top: 4px;
+  position: sticky;
+  bottom: -12px;
+  margin: auto -12px -12px;
+  padding: 14px 12px 12px;
+  background: linear-gradient(180deg, rgba(30, 20, 12, 0), rgba(30, 20, 12, 0.96) 35%);
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 
 .actions-end .btn {
@@ -1117,7 +1144,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 50;
+  z-index: 70; /* above announcement banners (60), below flying effects (80) */
 }
 
 .overlay {
@@ -1816,6 +1843,8 @@
     bottom: 0;
     z-index: 20;
     border-radius: 14px 14px 0 0;
+    contain: none;
+    max-height: 45vh;
   }
 
   .actions-pair {

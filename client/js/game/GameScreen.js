@@ -584,9 +584,13 @@ class GameScreen {
 registerScreen('game', (app, { session }) => {
   music.play('game');
   const screen = new GameScreen(app, session);
+  app.session = session;
   return {
     el: screen.el,
     onShow: () => session.start(),
-    destroy: () => screen.destroy(),
+    destroy: () => {
+      if (app.session === session) app.session = null;
+      screen.destroy();
+    },
   };
 });

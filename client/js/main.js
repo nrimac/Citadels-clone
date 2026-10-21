@@ -41,6 +41,8 @@ function boot() {
     go: (name, params) => app.router.go(name, params),
   };
   app.router = new Router(document.getElementById('app'), app);
+  // `?debug` exposes the app (and the running session) for automated UI tests.
+  if (new URLSearchParams(location.search).has('debug')) window.citadels = app;
 
   const code = inviteCode();
   if (code) {

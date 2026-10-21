@@ -16,13 +16,13 @@ export class Presenter {
 
   /** Remember element positions before the DOM is updated. */
   snapshot() {
-    const rects = new Map();
-    for (const el of this.root.querySelectorAll('[data-uid]')) {
-      if (el.closest('.fx-layer')) continue;
+    // Only cards on the table count (not choice overlays, previews or effects).
+    const found = new Map();
+    for (const el of this.root.querySelectorAll('.opponents [data-uid], .me [data-uid]')) {
       const r = el.getBoundingClientRect();
-      if (r.width) rects.set(`${el.dataset.uid}`, FX.cloneRect(r));
+      if (r.width) found.set(`${el.dataset.uid}`, { rect: FX.cloneRect(r), el });
     }
-    return rects;
+    return found;
   }
 
   anchor(seat, kind) {
@@ -173,11 +173,10 @@ export class Presenter {
       case 'build': {
         play('build');
         const dest = this.cardRect(e.card.uid);
-        const from = before.get(String(e.card.uid)) ?? this.anchor(e.seat, 'hand');
+        const from = before.get(String(e.card.uid))?.rect ?? this.anchor(e.seat, 'hand');
         if (dest?.el && from) {
           dest.el.classList.add('fx-hidden');
-          const clone = dest.el.cloneNode(true);
-          clone.classList.remove('fx-hidden', 'is-entering');
+          const clone = FX.sized(dest.el, dest.rect);
           this.fx.element(clone, from, dest.rect, { scaleFrom: from.width / dest.rect.width, scaleTo: 1, duration: 650 }).then(() => {
             dest.el.classList.remove('fx-hidden');
             dest.el.classList.add('fx-land');
@@ -218,9 +217,9 @@ export class Presenter {
         break;
       case 'destroy': {
         play('destroy');
-        const rect = before.get(String(e.card.uid));
+        const snap = before.get(String(e.card.uid));
         const def = getDistrict(e.card.id);
-        if (rect) fx.crumble(rect, getComputedStyle(document.documentElement).getPropertyValue(`--${def.suit}`).trim() || '#8a7a66');
+        if (snap) fx.crumble(snap.rect, snap.el);
         fx.shake(
           this.root.querySelector(`.seat[data-seat="${e.target}"]`) ?? (e.target === you ? this.root.querySelector('.me-city') : null),
         );

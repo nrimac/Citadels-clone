@@ -20,7 +20,7 @@ export function districtCard(card, { text = 'auto', classes = '' } = {}) {
   const el = h(
     'div',
     {
-      class: `card district suit-${def.suit} ${classes}`,
+      class: `card district suit-${def.suit} ${def.name.length > 11 ? 'long-name' : ''} ${classes}`,
       dataset: { preview: 'district', previewId: id, ...(card.uid != null ? { uid: card.uid } : {}) },
       tabindex: '-1',
     },

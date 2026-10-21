@@ -89,7 +89,7 @@ export class ActionPanel {
             variant: 'gold',
             icon: 'coins',
             sound: null,
-            title: 'Shortcut: G',
+            title: 'Take 2 gold from the bank (shortcut: G)',
             disabled: !t.takeGold,
             onClick: () => this.ctl.submit({ type: 'takeGold' }),
           }),
@@ -97,7 +97,7 @@ export class ActionPanel {
             variant: 'gold',
             icon: 'cards',
             sound: null,
-            title: 'Shortcut: D',
+            title: 'Draw district cards (shortcut: D)',
             disabled: !t.drawCards,
             onClick: () => this.ctl.submit({ type: 'drawCards' }),
           }),
@@ -117,7 +117,7 @@ export class ActionPanel {
         }),
       );
     }
-    if (t.income) {
+    if (t.income?.amount > 0) {
       special.push(
         button(`Collect taxes (+${t.income.amount})`, {
           icon: 'coins',
@@ -129,8 +129,9 @@ export class ActionPanel {
     }
     for (const d of t.districts) {
       special.push(
-        button(d.used ? `${getDistrict(d.id).name} ✓` : d.label, {
+        button(d.used ? `${getDistrict(d.id).name} ✓` : `Use ${getDistrict(d.id).name}`, {
           icon: DISTRICT_ICONS[d.id] ?? 'sparkles',
+          title: d.label,
           disabled: !d.available,
           onClick: () => this.ctl.useDistrict(d),
         }),

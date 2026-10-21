@@ -95,7 +95,8 @@ export class FX {
   }
 
   element(node, from, to, opts = {}) {
-    const wrap = h('div', { class: 'fx-element', style: { width: `${from.width}px`, height: `${from.height}px` } }, node);
+    // The node is laid out at its destination size; `scaleFrom` shrinks it to the source.
+    const wrap = h('div', { class: 'fx-element', style: { width: `${to.width}px`, height: `${to.height}px` } }, node);
     return this.fly(wrap, from, to, { duration: 720, arc: 60, ...opts });
   }
 
@@ -152,34 +153,50 @@ export class FX {
     }
   }
 
-  crumble(rect, color = '#8a7a66') {
+  /** Shatter a copy of `source` (the destroyed district) into falling shards. */
+  crumble(rect, source) {
     if (!this.enabled || !rect) return;
-    const cols = 4;
-    const rows = 5;
-    const w = rect.width / cols;
-    const hgt = rect.height / rows;
+    const cols = 3;
+    const rows = 4;
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
+        // Jagged-ish shards: each piece is a clipped copy of the whole card.
+        const jitter = () => (Math.random() - 0.5) * 6;
+        const x0 = (c / cols) * 100;
+        const x1 = ((c + 1) / cols) * 100;
+        const y0 = (r / rows) * 100;
+        const y1 = ((r + 1) / rows) * 100;
+        const clip = `polygon(${x0 + (c ? jitter() : 0)}% ${y0 + (r ? jitter() : 0)}%, ${x1 + (c < cols - 1 ? jitter() : 0)}% ${y0}%, ${x1}% ${y1 + (r < rows - 1 ? jitter() : 0)}%, ${x0}% ${y1}%)`;
         const piece = this._spawn(
-          h('div', {
-            class: 'fx-rubble',
-            style: {
-              left: `${rect.left + c * w}px`,
-              top: `${rect.top + r * hgt}px`,
-              width: `${w + 1}px`,
-              height: `${hgt + 1}px`,
-              background: color,
+          h(
+            'div',
+            {
+              class: 'fx-shard',
+              style: { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px`, clipPath: clip },
             },
-          }),
+            source ? FX.sized(source, rect) : h('div', { class: 'fx-rubble' }),
+          ),
         );
-        const dx = (c - cols / 2 + Math.random()) * 18;
+        const dx = (c - (cols - 1) / 2) * 26 + (Math.random() - 0.5) * 30;
+        const dy = 140 + Math.random() * 120;
         piece
           .animate(
             [
-              { transform: 'translate(0,0) rotate(0)', opacity: 1 },
-              { transform: `translate(${dx}px, ${120 + Math.random() * 80}px) rotate(${(Math.random() - 0.5) * 180}deg)`, opacity: 0 },
+              { transform: 'translate(0, 0) rotate(0deg)', opacity: 1, filter: 'brightness(1)' },
+              {
+                transform: `translate(${dx * 0.3}px, -10px) rotate(${(Math.random() - 0.5) * 20}deg)`,
+                opacity: 1,
+                filter: 'brightness(0.8)',
+                offset: 0.15,
+              },
+              { transform: `translate(${dx}px, ${dy}px) rotate(${(Math.random() - 0.5) * 220}deg)`, opacity: 0, filter: 'brightness(0.4)' },
             ],
-            { duration: 900 + Math.random() * 500, delay: (rows - r) * 40, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'both' },
+            {
+              duration: 1100 + Math.random() * 500,
+              delay: (rows - 1 - r) * 60 + Math.random() * 60,
+              easing: 'cubic-bezier(.45,0,.85,.55)',
+              fill: 'both',
+            },
           )
           .finished.then(
             () => piece.remove(),
@@ -188,6 +205,19 @@ export class FX {
       }
     }
     this.dust(rect);
+    this.burst(rect, { color: '#c8b48a', count: 10, spread: 50, size: 4 });
+  }
+
+  /** A detached copy of a card element, forced to a given on-screen size. */
+  static sized(el, rect) {
+    const clone = el.cloneNode(true);
+    clone.classList.remove('fx-hidden', 'is-entering', 'is-leaving', 'playable', 'selected');
+    clone.style.setProperty('--cw', `${rect.width}px`);
+    clone.style.width = `${rect.width}px`;
+    clone.style.height = `${rect.height}px`;
+    clone.style.margin = '0';
+    clone.style.transform = 'none';
+    return clone;
   }
 
   shake(el) {
