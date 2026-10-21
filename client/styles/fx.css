@@ -99,6 +99,36 @@
   height: 100%;
 }
 
+.fx-float {
+  position: fixed;
+  z-index: 2;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  color: #fff3cf;
+  background: rgba(20, 13, 8, 0.82);
+  border: 1px solid rgba(226, 177, 60, 0.7);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 2px #000;
+}
+
+.fx-float.tone-gold {
+  color: var(--gold-light);
+}
+
+.fx-float.tone-bad {
+  color: #ffb4a8;
+  border-color: #d9473a;
+}
+
+.fx-float.tone-info {
+  color: #cfe3ff;
+  border-color: rgba(120, 160, 230, 0.7);
+}
+
 .fx-hidden {
   visibility: hidden;
 }

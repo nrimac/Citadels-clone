@@ -204,6 +204,8 @@ class GameScreen {
     this.chronicle.update(view);
     this._badge();
     this.el.dataset.phase = view.phase;
+    const goal = view.options.cityGoal;
+    music.play(view.phase === 'over' ? 'finale' : view.players.some((p) => p.city.length >= goal - 1) ? 'tense' : 'game');
     this.el.classList.toggle('spectator', view.you == null);
 
     if (first && view.phase !== 'over') {

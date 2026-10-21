@@ -5,8 +5,15 @@ import { crestSVG, crownSVG, seatColor } from '../art/icons.js';
 import { characterMedallion, districtMini, hiddenMedallion, coin } from '../ui/cards.js';
 import { icon } from '../ui/components.js';
 
-export function statAnchor(seat, kind, content, title) {
-  return h('span', { class: `stat stat-${kind} seat-anchor`, dataset: { seat, anchor: kind }, title }, content);
+export function statAnchor(seat, kind, content, title, { bump = false } = {}) {
+  return h('span', { class: `stat stat-${kind} seat-anchor ${bump ? 'bump' : ''}`, dataset: { seat, anchor: kind }, title }, content);
+}
+
+/** Remember a value on an element; returns true when it changed since last time. */
+export function changed(el, key, value) {
+  const prev = el.dataset[key];
+  el.dataset[key] = String(value);
+  return prev !== undefined && prev !== String(value);
 }
 
 /** The characters a seat is known to hold this round (revealed ones, or hidden placeholders). */
@@ -71,8 +78,10 @@ export function updateSeat(el, view, p) {
   const goal = view.options.cityGoal;
   setChildren(
     el.querySelector('.seat-stats'),
-    statAnchor(p.seat, 'gold', [coin(), h('b', null, String(p.gold))], 'Gold'),
-    statAnchor(p.seat, 'hand', [icon('cards'), h('b', null, String(p.handCount))], 'Cards in hand'),
+    statAnchor(p.seat, 'gold', [coin(), h('b', null, String(p.gold))], 'Gold', { bump: changed(el, 'gold', p.gold) }),
+    statAnchor(p.seat, 'hand', [icon('cards'), h('b', null, String(p.handCount))], 'Cards in hand', {
+      bump: changed(el, 'hand', p.handCount),
+    }),
     h(
       'span',
       { class: `stat stat-city ${p.complete ? 'done' : ''}`, title: 'Districts built' },

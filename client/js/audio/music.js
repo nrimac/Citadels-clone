@@ -11,10 +11,15 @@ const CHORDS = {
   Am: ['A2', 'C3', 'E3', 'A3', 'C4'],
   F: ['F2', 'A2', 'C3', 'F3', 'A3'],
   Bb: ['Bb2', 'D3', 'F3', 'Bb3', 'D4'],
+  Gm: ['G2', 'Bb2', 'D3', 'G3', 'Bb3'],
+  A: ['A2', 'C#3', 'E3', 'A3', 'C#4'],
+  D: ['D3', 'F#3', 'A3', 'D4', 'F#4'],
+  Bm: ['B2', 'D3', 'F#3', 'B3', 'D4'],
 };
 
-// D dorian, two octaves for the recorder.
-const SCALE = ['D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6', 'D6', 'E6'];
+// Recorder scales, a little over an octave.
+const DORIAN = ['D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6', 'D6', 'E6'];
+const MAJOR = ['D5', 'E5', 'F#5', 'G5', 'A5', 'B5', 'C#6', 'D6', 'E6'];
 
 export const MOODS = {
   menu: {
@@ -26,7 +31,7 @@ export const MOODS = {
       [0, 2, 4, 2, 3, 2, 1, 2],
     ],
     melodyChance: 0.55,
-    drum: false,
+    drum: null,
     drone: ['D2', 'A2'],
     density: 0.85,
   },
@@ -39,9 +44,39 @@ export const MOODS = {
       [0, 2, 4, 3, 2, 1, 2, 3],
     ],
     melodyChance: 0.35,
-    drum: true,
+    drum: [0, 4],
     drone: ['D2', 'A2'],
     density: 0.75,
+    crackle: true,
+  },
+  // Someone is one district from finishing: the music tightens.
+  tense: {
+    bpm: 92,
+    progression: ['Dm', 'Bb', 'C', 'A', 'Dm', 'Gm', 'A', 'A'],
+    patterns: [
+      [0, 2, 1, 2, 0, 2, 1, 2],
+      [0, 1, 2, 1, 3, 1, 2, 1],
+      [0, 3, 1, 3, 2, 3, 1, 4],
+    ],
+    melodyChance: 0.2,
+    drum: [0, 2, 4, 6],
+    drone: ['D2', 'A2'],
+    density: 0.95,
+    crackle: true,
+  },
+  // After the final reckoning: warm and bright.
+  finale: {
+    bpm: 68,
+    progression: ['D', 'D', 'G', 'A', 'Bm', 'G', 'A', 'D'],
+    patterns: [
+      [0, 2, 4, 2, 3, 2, 1, 2],
+      [0, 1, 2, 3, 4, 3, 2, 1],
+    ],
+    melodyChance: 0.75,
+    scale: MAJOR,
+    drum: null,
+    drone: ['D2', 'A2'],
+    density: 0.8,
   },
 };
 
@@ -57,12 +92,16 @@ export class MusicDirector {
     if (mood === this.mood) return;
     this.mood = mood;
     if (!this.engine.ctx) {
-      // Start as soon as audio is unlocked.
-      this.engine.onReady(() => {
-        const m = this.mood;
-        this.mood = null;
-        this.play(m);
-      });
+      // Start (with whatever mood is current by then) once audio is unlocked.
+      if (!this.waiting) {
+        this.waiting = true;
+        this.engine.onReady(() => {
+          this.waiting = false;
+          const m = this.mood;
+          this.mood = null;
+          this.play(m);
+        });
+      }
       return;
     }
     this._stopSession();
@@ -106,6 +145,19 @@ export class MusicDirector {
         o.connect(droneFilter);
         oscs.push(o);
       }
+    }
+    if (def.crackle) {
+      // A low fireside rumble under the music; crackles are added per step.
+      const bed = ctx.createBufferSource();
+      bed.buffer = e.noise();
+      bed.loop = true;
+      const lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 380;
+      const bedGain = ctx.createGain();
+      bedGain.gain.value = 0.05;
+      bed.connect(lp).connect(bedGain).connect(out);
+      oscs.push(bed);
     }
     oscs.forEach((o) => o.start());
 
@@ -159,7 +211,7 @@ export class MusicDirector {
       if (Math.random() < 0.3) s.pattern = def.patterns[Math.floor(Math.random() * def.patterns.length)];
       // Bass note on the downbeat.
       pluck(e, { freq: NOTE(chord[0]) / 2, start, gain: 0.2, dest: s.out, brightness: 0.25, decay: 0.997, seconds: 2.6 });
-      if (bar % 4 === 0 && Math.random() < def.melodyChance) s.melody = this._composePhrase(chord);
+      if (bar % 4 === 0 && Math.random() < def.melodyChance) s.melody = this._composePhrase(chord, def.scale ?? DORIAN);
     }
 
     if (Math.random() < def.density) {
@@ -175,14 +227,28 @@ export class MusicDirector {
     }
     if (beat === 7 && bar % 4 === 3) s.melody = [];
 
-    if (def.drum && (beat === 0 || beat === 4 || (beat === 6 && Math.random() < 0.3))) {
+    if (def.drum && (def.drum.includes(beat) || (beat === 6 && Math.random() < 0.3))) {
       const accent = beat === 0 ? 1 : 0.6;
       e.tone({ type: 'sine', freq: 95, to: 50, start, decay: 0.28, gain: 0.12 * accent, dest: s.out });
       e.noiseBurst({ start, duration: 0.08, gain: 0.03 * accent, type: 'lowpass', freq: 600, dest: s.out });
     }
+
+    if (def.crackle && Math.random() < 0.22) {
+      const pops = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < pops; i++) {
+        e.noiseBurst({
+          start: start + Math.random() * 0.2,
+          duration: 0.006 + Math.random() * 0.018,
+          gain: 0.012 + Math.random() * 0.03,
+          type: 'highpass',
+          freq: 2200 + Math.random() * 3000,
+          dest: s.out,
+        });
+      }
+    }
   }
 
-  _composePhrase(chord) {
+  _composePhrase(chord, SCALE) {
     // Random walk on the scale, starting near a chord tone, spanning a few bars.
     const chordTones = chord.map((n) => n[0]);
     let idx = SCALE.findIndex((n) => chordTones.includes(n[0]));

@@ -23,6 +23,7 @@ export function districtCard(card, { text = 'auto', classes = '' } = {}) {
       class: `card district suit-${def.suit} ${def.name.length > 11 ? 'long-name' : ''} ${classes}`,
       dataset: { preview: 'district', previewId: id, ...(card.uid != null ? { uid: card.uid } : {}) },
       tabindex: '-1',
+      'aria-label': `${def.name}, ${SUITS[def.suit]?.name ?? ''} district, costs ${def.cost}${def.text ? `. ${def.text}` : ''}`,
     },
     h('div', { class: 'card-art', html: districtSVG(id) }),
     h('div', { class: 'card-frame' }),
@@ -51,7 +52,12 @@ export function characterCard(id, { classes = '', text = false } = {}) {
   const def = getCharacter(id);
   return h(
     'div',
-    { class: `card character char-${id} ${classes}`, dataset: { preview: 'character', previewId: id, character: id }, tabindex: '-1' },
+    {
+      class: `card character char-${id} ${classes}`,
+      dataset: { preview: 'character', previewId: id, character: id },
+      tabindex: '-1',
+      'aria-label': `${def.name}, rank ${def.rank}. ${def.text}`,
+    },
     h('div', { class: 'card-art', html: portraitSVG(id) }),
     h('div', { class: 'card-frame' }),
     h('div', { class: 'card-rank' }, ROMAN[def.rank] ?? def.rank),

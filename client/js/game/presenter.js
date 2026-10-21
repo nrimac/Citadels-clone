@@ -43,11 +43,9 @@ export class Presenter {
 
   present(view, events, before) {
     const name = makeNamer(view);
-    const you = view.you;
-    let delay = 0;
     for (const e of events) {
       try {
-        delay = this._one(e, view, before, name, you, delay) ?? delay;
+        this._one(e, view, before, name, view.you);
       } catch (err) {
         console.warn('[presenter]', e.type, err);
       }
@@ -117,6 +115,8 @@ export class Presenter {
       case 'robbed':
         play('robbed');
         fx.coins(this.anchor(e.target, 'gold'), this.anchor(e.seat, 'gold'), Math.max(1, e.amount));
+        fx.floatText(this.anchor(e.target, 'gold'), `−${e.amount}`, 'bad');
+        fx.floatText(this.anchor(e.seat, 'gold'), `+${e.amount}`, 'gold', 700);
         this.banners.push({
           character: 'thief',
           title: `${e.amount} gold stolen!`,
@@ -135,16 +135,19 @@ export class Presenter {
       case 'take-gold':
         play('coins', { count: e.amount });
         fx.coins(this.place('bank'), this.anchor(e.seat, 'gold'), e.amount);
+        fx.floatText(this.anchor(e.seat, 'gold'), `+${e.amount}`, 'gold', 550);
         break;
       case 'gold':
         if (e.source === 'laboratory') play('lab');
         else play('coins', { count: e.amount });
         fx.coins(this.place('bank'), this.anchor(e.seat, 'gold'), e.amount, { delay: 250 });
+        fx.floatText(this.anchor(e.seat, 'gold'), `+${e.amount}`, 'gold', 800);
         break;
       case 'income':
         if (e.amount > 0) {
           play('income', { count: e.amount });
           fx.coins(this.place('bank'), this.anchor(e.seat, 'gold'), e.amount);
+          fx.floatText(this.anchor(e.seat, 'gold'), `+${e.amount} taxes`, 'gold', 550);
         }
         break;
       case 'draw':
@@ -158,6 +161,7 @@ export class Presenter {
         break;
       case 'keep':
         play('cardSelect');
+        if (e.seat !== you) fx.floatText(this.anchor(e.seat, 'hand'), `+${e.kept}`, 'info');
         break;
       case 'bonus-cards':
       case 'smithy':

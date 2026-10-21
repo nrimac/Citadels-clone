@@ -15,6 +15,7 @@
   gap: 8px;
   padding: 8px 12px 0;
   overflow: hidden;
+  overflow: clip;
 }
 
 .table-backdrop {
@@ -418,6 +419,11 @@
 .stat .coin {
   width: 18px;
   height: 18px;
+}
+
+.stat.bump b {
+  display: inline-block;
+  animation: stat-bump 700ms var(--ease-spring);
 }
 
 .stat-city.done b {
@@ -985,11 +991,13 @@
 .me-hand {
   --cw: var(--hand-cw);
   min-height: calc(var(--hand-cw) * 1.4 + 12px);
-  padding-top: 10px;
+  padding: 10px 12px 0;
 }
 
 .me-hand .card {
   --cw: var(--hand-cw);
+  transform: translateY(var(--lift, 0px)) rotate(var(--rot, 0deg));
+  transform-origin: 50% 100%;
 }
 
 .me-hand .card + .card {
@@ -1025,7 +1033,12 @@
 }
 
 .me-hand .card:not(.playable):hover {
-  transform: translateY(-10px);
+  transform: translateY(-10px) rotate(0deg);
+}
+
+.me-hand .card.playable:hover,
+.me-hand .card.playable:focus-visible {
+  transform: translateY(-16px) rotate(0deg) scale(1.05);
 }
 
 /* ---------------------------------------------------------------- actions */
@@ -1491,7 +1504,8 @@
 /* ---------------------------------------------------------------- chronicle */
 
 .chronicle {
-  position: absolute;
+  /* Fixed (not absolute) so the hidden drawer never makes the table scrollable. */
+  position: fixed;
   top: 70px;
   right: 12px;
   bottom: 12px;
@@ -1502,11 +1516,18 @@
   gap: 10px;
   padding: 14px;
   transform: translateX(calc(100% + 30px));
-  transition: transform 420ms var(--ease-out);
+  visibility: hidden;
+  transition:
+    transform 420ms var(--ease-out),
+    visibility 0s linear 420ms;
 }
 
 .chronicle.open {
   transform: none;
+  visibility: visible;
+  transition:
+    transform 420ms var(--ease-out),
+    visibility 0s;
 }
 
 .chronicle-head {
@@ -1861,6 +1882,21 @@
 }
 
 /* ---------------------------------------------------------------- keyframes */
+
+@keyframes stat-bump {
+  0% {
+    transform: scale(1);
+    color: var(--ink);
+  }
+  30% {
+    transform: scale(1.5);
+    color: var(--gold-light);
+    text-shadow: 0 0 10px rgba(248, 220, 138, 0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 @keyframes candle {
   0% {

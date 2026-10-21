@@ -5,7 +5,7 @@ import { crestSVG, crownSVG, seatColor } from '../art/icons.js';
 import { characterCard, districtCard, coin } from '../ui/cards.js';
 import { icon } from '../ui/components.js';
 import { getDistrict, SUIT_ORDER, SUITS } from '../../../shared/content/index.js';
-import { statAnchor } from './seats.js';
+import { changed, statAnchor } from './seats.js';
 
 const BLOCK_REASONS = {
   action: 'Gather resources (gold or cards) before building',
@@ -104,8 +104,10 @@ export class PlayerArea {
       h(
         'div',
         { class: 'profile-stats' },
-        statAnchor(me.seat, 'gold', [coin(), h('b', null, String(me.gold))], 'Your gold'),
-        statAnchor(me.seat, 'hand', [icon('cards'), h('b', null, String(me.handCount))], 'Cards in hand'),
+        statAnchor(me.seat, 'gold', [coin(), h('b', null, String(me.gold))], 'Your gold', { bump: changed(this.profile, 'gold', me.gold) }),
+        statAnchor(me.seat, 'hand', [icon('cards'), h('b', null, String(me.handCount))], 'Cards in hand', {
+          bump: changed(this.profile, 'hand', me.handCount),
+        }),
       ),
       h(
         'div',
@@ -166,6 +168,15 @@ export class PlayerArea {
         });
         return el;
       },
+    });
+    // Lay the hand out as a gentle fan, like cards held in the hand.
+    const cards = [...this.hand.children].filter((el) => !el.classList.contains('is-leaving'));
+    const n = cards.length;
+    const spread = Math.min(2.6, 14 / Math.max(1, n));
+    cards.forEach((el, i) => {
+      const offset = i - (n - 1) / 2;
+      el.style.setProperty('--rot', `${(offset * spread).toFixed(2)}deg`);
+      el.style.setProperty('--lift', `${Math.min(12, offset * offset * 0.9).toFixed(1)}px`);
     });
     for (const el of this.hand.children) {
       const uid = Number(el.dataset.uid);

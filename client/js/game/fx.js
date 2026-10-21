@@ -153,6 +153,26 @@ export class FX {
     }
   }
 
+  /** A short label ("+2", "−5") that rises from a spot on the table and fades. */
+  floatText(rect, text, tone = 'gold', delay = 0) {
+    if (!rect) return;
+    const el = this._spawn(
+      h('div', { class: `fx-float tone-${tone}`, style: { left: `${rect.left + rect.width / 2}px`, top: `${rect.top}px` } }, text),
+    );
+    const rise = this.enabled ? 34 : 0;
+    el.animate(
+      [
+        { transform: 'translate(-50%, 0) scale(0.7)', opacity: 0 },
+        { transform: 'translate(-50%, -10px) scale(1.1)', opacity: 1, offset: 0.18 },
+        { transform: `translate(-50%, -${rise}px) scale(1)`, opacity: 0 },
+      ],
+      { duration: 1500, delay, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'both' },
+    ).finished.then(
+      () => el.remove(),
+      () => el.remove(),
+    );
+  }
+
   /** Shatter a copy of `source` (the destroyed district) into falling shards. */
   crumble(rect, source) {
     if (!this.enabled || !rect) return;
