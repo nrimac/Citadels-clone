@@ -5,11 +5,15 @@
 
 import { getCharacter } from '../content/index.js';
 import { cardValue, characterValue, cityIds, defOf, threat } from './evaluate.js';
+import { lookahead } from './lookahead.js';
+
+// Rollouts inside the lookahead use the normal bot as everyone's policy.
+const rolloutPolicy = (view, random) => chooseAction(view, 'normal', random) ?? fallbackAction(view);
 
 export const BOT_LEVELS = {
   easy: { label: 'Squire', noise: 3.0, inference: false, destroyBias: -1.5 },
   normal: { label: 'Knight', noise: 1.0, inference: true, destroyBias: 0 },
-  hard: { label: 'Lord', noise: 0.4, inference: true, destroyBias: 0.5, aware: true },
+  hard: { label: 'Lord', noise: 0.4, inference: true, destroyBias: 0.5, aware: true, lookahead: 60 },
 };
 
 const best = (items, score) => {
@@ -275,6 +279,16 @@ export function chooseAction(view, level = 'normal', random = Math.random) {
 
   const handCtx = { handCount: view.hand.length, handPlayable: ctx.playable.length, aware: !!ctx.cfg.aware };
   if (legal.pick) {
+    if (ctx.cfg.lookahead && legal.pick.length > 1) {
+      const character = lookahead(view, legal.pick, (id) => ({ type: 'pick', character: id }), {
+        policy: rolloutPolicy,
+        random,
+        budgetMs: ctx.cfg.lookahead,
+        // The heuristic only breaks near-ties between simulated outcomes.
+        prior: (id) => characterValue(view, me, id, handCtx) * 0.05,
+      });
+      return { type: 'pick', character };
+    }
     const { item } = best(legal.pick, (id) => ctx.noisy(characterValue(view, me, id, handCtx)));
     return { type: 'pick', character: item };
   }

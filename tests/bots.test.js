@@ -85,3 +85,43 @@ describe('GameHost', () => {
     host.destroy();
   });
 });
+
+describe('lookahead', () => {
+  test('determinized worlds match everything the bot can see', async () => {
+    const { determinize } = await import('../shared/bots/determinize.js');
+    const s = createGame({ players: Array.from({ length: 5 }, (_, i) => ({ id: `d${i}`, name: `D${i}` })), seed: 99 });
+    let checked = 0;
+    for (let step = 0; s.phase !== 'over' && step < 400; step++) {
+      const seat = getActiveSeat(s);
+      const view = getView(s, seat);
+      if (step % 7 === 0) {
+        const w = determinize(view);
+        checked++;
+        assert.equal(Object.keys(w.cards).length, 66, 'every district card exists exactly once');
+        assert.equal(getActiveSeat(w), seat, 'the same seat is to move');
+        assert.deepEqual(w.players[seat].hand, s.players[seat].hand, 'own hand is known');
+        w.players.forEach((p, i) => {
+          assert.equal(p.hand.length, s.players[i].hand.length);
+          assert.deepEqual(p.city, s.players[i].city);
+          assert.equal(p.gold, s.players[i].gold);
+        });
+        assert.equal(w.deck.length, s.deck.length);
+        for (const c of view.players[seat].characters) assert.equal(w.owners[c.id], seat);
+        // The world must be playable from here.
+        const res = applyAction(w, seat, chooseAction(getView(w, seat), 'normal'));
+        assert.ok(res.ok, res.error);
+      }
+      applyAction(s, seat, chooseAction(view, 'normal'));
+    }
+    assert.ok(checked > 10);
+  });
+
+  test('a lookahead pick is always one of the legal characters', () => {
+    const s = createGame({ players: Array.from({ length: 4 }, (_, i) => ({ id: `l${i}`, name: `L${i}` })), seed: 5 });
+    const seat = getActiveSeat(s);
+    const view = getView(s, seat);
+    const action = chooseAction(view, 'hard');
+    assert.equal(action.type, 'pick');
+    assert.ok(view.legal.pick.includes(action.character));
+  });
+});

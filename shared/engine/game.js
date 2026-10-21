@@ -119,14 +119,7 @@ function startRound(state) {
     faceUp.push(id);
   }
 
-  const order = Array.from({ length: n }, (_, i) => (state.crown + i) % n);
-  const steps = [];
-  for (let r = 0; r < rules.rounds; r++) {
-    for (const seat of order) {
-      steps.push({ seat, kind: 'pick' });
-      if (rules.discardAfterPick && steps.length > 1) steps.push({ seat, kind: 'discard' });
-    }
-  }
+  const steps = draftSteps(n, state.crown, rules);
 
   state.draft = {
     steps,
@@ -138,6 +131,19 @@ function startRound(state) {
   };
   pushLog(state, 'round-start', { round: state.round, crown: state.crown, faceUp: [...faceUp], faceDown: faceDown.length });
   prepareDraftStep(state);
+}
+
+/** The sequence of draft decisions for a round, starting with the crown holder. */
+export function draftSteps(n, crown, rules) {
+  const order = Array.from({ length: n }, (_, i) => (crown + i) % n);
+  const steps = [];
+  for (let r = 0; r < rules.rounds; r++) {
+    for (const seat of order) {
+      steps.push({ seat, kind: 'pick' });
+      if (rules.discardAfterPick && steps.length > 1) steps.push({ seat, kind: 'discard' });
+    }
+  }
+  return steps;
 }
 
 function prepareDraftStep(state) {
@@ -484,12 +490,17 @@ function handlePrompt(state, seat, action) {
 
 // ---------------------------------------------------------------- public API
 
-export function applyAction(state, seat, action) {
+/**
+ * Apply one action for `seat`. Invalid actions leave the state untouched.
+ * `trusted` skips the rollback snapshot; only simulations (bot lookahead),
+ * which discard the state on failure anyway, should use it.
+ */
+export function applyAction(state, seat, action, { trusted = false } = {}) {
   if (!action || typeof action !== 'object' || typeof action.type !== 'string') {
     return { ok: false, error: 'Malformed action' };
   }
   if (!Number.isInteger(seat) || !state.players[seat]) return { ok: false, error: 'Unknown player' };
-  const backup = structuredClone(state);
+  const backup = trusted ? null : structuredClone(state);
   try {
     if (state.phase === PHASE.OVER) fail('The game is over');
     if (state.prompt) handlePrompt(state, seat, action);
@@ -497,8 +508,10 @@ export function applyAction(state, seat, action) {
     else handleTurn(state, seat, action);
     return { ok: true };
   } catch (err) {
-    for (const key of Object.keys(state)) delete state[key];
-    Object.assign(state, backup);
+    if (backup) {
+      for (const key of Object.keys(state)) delete state[key];
+      Object.assign(state, backup);
+    }
     if (err instanceof RuleError) return { ok: false, error: err.message };
     console.error('[engine] unexpected error', err);
     return { ok: false, error: 'Something went wrong applying that action' };

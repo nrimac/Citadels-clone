@@ -19,7 +19,7 @@ Every illustration is hand-built SVG and every sound (including the music) is sy
   - *Quick Game* against three bots in one click.
   - *Gather at the Table*: any mix of humans sharing a device and bots. Private cards are hidden between turns with a "pass the device" screen.
   - *Play Online*: host a table, share the 5-letter friend code or an invite link (`/join/CODE`), fill empty seats with bots, chat, and rematch. Refreshing or briefly losing connection returns you to your seat; if you're gone too long (or idle past the optional turn timer) a bot plays for you until you're back.
-- **Bots in three temperaments** — Squire (easy), Knight (normal) and Lord (hard). Bots only ever see their own view of the game, exactly like a human.
+- **Bots in three temperaments** — Squire (easy), Knight (normal) and Lord (hard). Bots only ever see their own view of the game, exactly like a human. Lords think ahead: before choosing a character they imagine dozens of possible hidden hands and character assignments consistent with what they've seen, play the round out in their head, and take the most promising option (in testing they win about 85–90% of games against a table of Knights).
 - **Art & sound**: illustrated characters and districts, an animated night skyline with parallax, flying coins and cards, crumbling districts, banners and confetti; synthesized coin clinks, card flicks, church bells, brass fanfares and a generative lute-and-recorder soundtrack.
 - **Quality of life**: a narrated chronicle of every move, rules reference built from the game data, card previews on hover, keyboard shortcuts (`G` gold, `D` draw, `E` end turn, `L` chronicle), volume controls and a reduced-motion mode. Works on phones too.
 
@@ -92,7 +92,7 @@ Everything is data-driven through the registry in `shared/content/registry.js`:
 - **A new character**: register an object with `rank`, `income`, `buildLimit`, lifecycle hooks (`onCalled`, `afterAction`, `onRoundEnd`) and `abilities` whose `input` is `character`, `player`, `district`, `cards` or `none`. The action panel and targeting overlays are generated from that description. Add a portrait in `client/js/art/characters.js`.
 - **A new edition / expansion** (e.g. Dark City): call `registerEdition` with its character list, district deck, draft rules per player count and scoring bonuses.
 - **Hooks API**: content code changes the game only through the `ctx` object from `shared/engine/context.js` (`gainGold`, `drawCards`, `destroyDistrict`, `log`, …).
-- **Bots**: per-ability strategies live in `ABILITY_STRATEGIES` in `shared/bots/bot.js`; difficulty levels are entries in `BOT_LEVELS`.
+- **Bots**: per-ability strategies live in `ABILITY_STRATEGIES` in `shared/bots/bot.js`; difficulty levels are entries in `BOT_LEVELS`. `shared/bots/determinize.js` samples hidden information consistent with a view and `shared/bots/lookahead.js` compares candidate moves by simulation — reuse them for other decisions.
 - **Screens**: `registerScreen(name, factory)` in `client/js/core/router.js`.
 - **Sounds**: add a function to `SFX` in `client/js/audio/sfx.js` and call `play(name)`; music moods are entries in `MOODS` in `client/js/audio/music.js`.
 

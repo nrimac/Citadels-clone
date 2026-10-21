@@ -13,6 +13,9 @@ export const PACING = {
   instant: 0,
 };
 
+// Milliseconds to wait before a bot starts thinking about its move.
+const THINK_DELAY = 60;
+
 const BASE_DELAY = {
   pick: 1100,
   discardCharacter: 900,
@@ -161,11 +164,20 @@ export class GameHost {
     if (seat == null) return;
 
     if (this.isAutomated(seat)) {
-      // Decide now, but act after a delay that depends on the kind of move,
-      // so humans can follow what the bots are doing.
-      const action = this._decide(seat);
-      const delay = (BASE_DELAY[action?.type] ?? 1000) * this.pacing * (0.85 + Math.random() * 0.3);
-      this.timer = setTimeout(() => this._botStep(seat, action), delay);
+      // Think on a later tick (so the last move's animations start smoothly),
+      // then act after a delay that depends on the kind of move, so humans
+      // can follow what the bots are doing.
+      const started = Date.now();
+      this.timer = setTimeout(
+        () => {
+          this.timer = null;
+          if (this.destroyed || this.paused || this.activeSeat() !== seat) return this._schedule();
+          const action = this._decide(seat);
+          const delay = (BASE_DELAY[action?.type] ?? 1000) * this.pacing * (0.85 + Math.random() * 0.3);
+          this.timer = setTimeout(() => this._botStep(seat, action), Math.max(0, delay - (Date.now() - started)));
+        },
+        this.pacing ? THINK_DELAY : 0,
+      );
     } else if (this.turnTimeout > 0) {
       // An idle human is handed to the autopilot until they act again.
       this.deadline = Date.now() + this.turnTimeout;
