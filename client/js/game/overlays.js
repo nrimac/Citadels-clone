@@ -64,6 +64,12 @@ export class Overlays {
    */
   chooser(key, { title, subtitle, options, min = 1, max = 1, confirmLabel, onConfirm, cancellable = true, onCancel, extra }) {
     return this.show(key, (panel, handle) => {
+      if (cancellable) {
+        handle.cancel = () => {
+          handle.close();
+          onCancel?.();
+        };
+      }
       const selected = new Set();
       const confirmBtn = button(typeof confirmLabel === 'function' ? confirmLabel(selected) : (confirmLabel ?? 'Confirm'), {
         variant: 'primary',
@@ -138,15 +144,7 @@ export class Overlays {
         h(
           'div',
           { class: 'overlay-actions' },
-          cancellable
-            ? button('Cancel', {
-                variant: 'ghost',
-                onClick: () => {
-                  handle.close();
-                  onCancel?.();
-                },
-              })
-            : null,
+          cancellable ? button('Cancel', { variant: 'ghost', onClick: () => handle.cancel() }) : null,
           confirmBtn,
         ),
       ]);

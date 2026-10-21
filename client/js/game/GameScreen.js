@@ -136,6 +136,7 @@ class GameScreen {
         if (reason === 'kicked') toast('You were removed from the table.', { type: 'error' });
         else if (reason === 'closed') toast('The table was closed.', { type: 'error' });
         else if (reason === 'replaced') toast('This table was opened in another tab.', { type: 'error' });
+        else toast('That table is no longer available.', { type: 'error' });
         this.app.go('title');
       }),
       s.on('connection', (status) => {
@@ -152,6 +153,7 @@ class GameScreen {
       if (e.target.closest?.('input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
       const key = e.key.toLowerCase();
       if (key === 'l') return this.chronicle.toggle();
+      if (key === 'escape' && !document.querySelector('.modal-backdrop')) return this.overlays.current?.cancel?.();
       // Turn shortcuts only apply when no dialog or choice is on screen.
       if (this.overlays.open || document.querySelector('.modal-backdrop')) return;
       const t = this.view?.legal?.turn;

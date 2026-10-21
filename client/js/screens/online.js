@@ -48,6 +48,7 @@ registerScreen('online', (app, params = {}) => {
   let chatView = null;
   let lastSeatCount = 0;
   let pendingAction = null;
+  let botLevel = 'normal';
 
   const nameInput = h('input', { class: 'input', maxlength: '20', placeholder: 'Your name', value: settings.get('name') || '' });
   const codeInput = h('input', {
@@ -158,7 +159,6 @@ registerScreen('online', (app, params = {}) => {
       h('div', { class: 'seat-row empty' }, h('span', { class: 'seat-empty' }, 'Empty seat')),
     );
 
-    let botLevel = 'normal';
     const hostControls = isHost
       ? h(
           'div',
@@ -205,6 +205,8 @@ registerScreen('online', (app, params = {}) => {
 
     if (!chatView) chatView = chatPanel({ onSend: (text) => client.send({ t: C.CHAT, text }) });
     chatView.update(chat, room);
+    // Re-rendering moves the chat box; keep the cursor there if someone was typing.
+    const typing = chatView.el.contains(document.activeElement);
 
     setChildren(
       panel,
@@ -271,6 +273,7 @@ registerScreen('online', (app, params = {}) => {
           : h('div', { class: 'waiting-note' }, h('span', { class: 'spinner' }), me ? `Seated as ${me.name}` : ''),
       ),
     );
+    if (typing) chatView.focus();
   }
 
   function optionRow(label, control) {
