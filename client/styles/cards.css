@@ -112,23 +112,46 @@
   border-bottom: 1px solid rgba(138, 93, 20, 0.45);
 }
 
+/* Rules text is set in a sturdy, upright book face with optical sizing, so it
+   stays legible at small sizes. Cards that show it give up some picture height
+   to make room for it. */
 .card .card-text {
   display: none;
   position: absolute;
-  top: 78%;
-  bottom: 6%;
-  left: 9%;
-  right: 9%;
-  font-size: 0.74em;
-  font-style: italic;
-  line-height: 1.12;
-  color: var(--ink-dark-dim);
+  top: 68%;
+  bottom: 5.5%;
+  left: 7%;
+  right: 7%;
+  font-family: var(--font-card);
+  font-size: 0.8em;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink-dark);
   text-align: center;
+  text-wrap: balance;
+  font-variant-numeric: lining-nums;
+  -webkit-font-smoothing: auto;
   overflow: hidden;
+}
+
+.card .card-text.long {
+  font-size: 0.72em;
 }
 
 .card.show-text .card-text {
   display: block;
+}
+
+.card.district.has-text.show-text .card-art {
+  height: 45%;
+}
+
+.card.district.has-text.show-text .card-name {
+  top: 55%;
+}
+
+.card.district.has-text.show-text .card-points {
+  top: 45%;
 }
 
 .card .card-cost {
@@ -256,10 +279,16 @@
   bottom: 17%;
   left: 5.5%;
   right: 5.5%;
-  padding: 0.5em 0.6em;
-  background: linear-gradient(180deg, transparent, rgba(10, 6, 3, 0.92) 30%);
-  color: #f4e9cf;
-  font-style: normal;
+  padding: 1.2em 0.75em 0.6em;
+  background: linear-gradient(180deg, rgba(14, 9, 5, 0) 0, rgba(14, 9, 5, 0.95) 1.2em);
+  color: #fbf3df;
+  font-size: 0.78em;
+  line-height: 1.22;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  -webkit-font-smoothing: antialiased;
+}
+
+.card.character .card-text.long {
   font-size: 0.72em;
 }
 
