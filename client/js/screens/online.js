@@ -54,7 +54,10 @@ registerScreen('online', (app, params = {}) => {
   const codeInput = h('input', {
     class: 'input code',
     maxlength: String(ROOM_CODE_LENGTH),
+    size: String(ROOM_CODE_LENGTH),
     placeholder: '•••••',
+    'aria-label': 'Friend code',
+    autocapitalize: 'characters',
     value: params.code ? normalizeCode(params.code) : '',
     autocomplete: 'off',
     spellcheck: 'false',

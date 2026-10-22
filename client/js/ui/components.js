@@ -195,18 +195,38 @@ export function installCardPreview() {
     current = `${type}:${id}`;
     const card =
       type === 'character' ? characterCard(id, { text: true, classes: 'show-text' }) : districtCard(id, { classes: 'show-text' });
+    // Set on the card itself: `.card` declares its own --cw, which would win over an inherited one.
+    card.style.setProperty('--cw', `${previewWidth(target)}px`);
     tip = h('div', { class: 'preview-tip' }, card);
     document.body.append(tip);
     position(x, y);
   };
+  // The preview is always a clear enlargement: at least ~1.8x the card under the
+  // pointer and roughly a third of the screen tall, but never larger than the viewport.
+  const previewWidth = (target) => {
+    const source = target.getBoundingClientRect().width;
+    const wanted = Math.min(320, Math.max(220, source * 1.8, window.innerHeight * 0.3));
+    const fits = Math.min((window.innerHeight - 16) / 1.4, window.innerWidth - 16);
+    return Math.round(Math.min(wanted, fits));
+  };
   const position = (x, y) => {
     if (!tip) return;
-    const w = 190;
-    const hgt = 266;
-    const left = x + 24 + w > window.innerWidth ? x - w - 24 : x + 24;
-    const top = Math.min(window.innerHeight - hgt - 8, Math.max(8, y - hgt / 2));
-    tip.style.left = `${Math.max(8, left)}px`;
-    tip.style.top = `${top}px`;
+    const margin = 8;
+    const gap = 24;
+    const w = tip.offsetWidth;
+    const hgt = tip.offsetHeight;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    let left = x + gap;
+    let top = y - hgt / 2;
+    if (left + w > vw - margin) left = x - gap - w;
+    if (left < margin) {
+      // No room beside the pointer (narrow screens): centre it and float it above, or else below.
+      left = (vw - w) / 2;
+      top = y - gap - hgt >= margin ? y - gap - hgt : y + gap;
+    }
+    tip.style.left = `${Math.max(margin, Math.min(vw - w - margin, left))}px`;
+    tip.style.top = `${Math.max(margin, Math.min(vh - hgt - margin, top))}px`;
   };
   const previewable = (el) => {
     const target = el?.closest?.('[data-preview]');
@@ -237,7 +257,7 @@ export function installCardPreview() {
     holdStart = { x: clientX, y: clientY };
     holdTimer = setTimeout(() => {
       held = true;
-      show(target, clientX, clientY - 120);
+      show(target, clientX, clientY);
       navigator.vibrate?.(12);
     }, 450);
   });

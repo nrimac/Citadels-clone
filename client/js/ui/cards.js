@@ -8,6 +8,9 @@ import { cardBackSVG, coinSVG, suitGemSVG } from '../art/icons.js';
 
 export const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
+// Rules text longer than this (in characters) is set a size smaller so it fits the card.
+const LONG_TEXT = { district: 64, character: 110 };
+
 const gem = (suit) => {
   const s = SUITS[suit];
   return s ? fromHTML(suitGemSVG(suit, s.color, s.dark)) : null;
@@ -33,7 +36,10 @@ export function districtCard(card, { text = 'auto', classes = '' } = {}) {
   );
   if (def.points && def.points !== def.cost)
     el.append(h('div', { class: 'card-points', title: `Worth ${def.points} points` }, `★${def.points}`));
-  if (def.text && text !== 'none') el.append(h('div', { class: 'card-text' }, def.text));
+  if (def.text && text !== 'none') {
+    el.classList.add('has-text');
+    el.append(h('div', { class: `card-text ${def.text.length > LONG_TEXT.district ? 'long' : ''}` }, def.text));
+  }
   return el;
 }
 
@@ -63,7 +69,7 @@ export function characterCard(id, { classes = '', text = false } = {}) {
     h('div', { class: 'card-rank' }, ROMAN[def.rank] ?? def.rank),
     def.income ? h('div', { class: 'card-gem' }, gem(def.income)) : null,
     h('div', { class: 'card-name' }, h('span', null, def.name)),
-    text ? h('div', { class: 'card-text' }, def.text) : null,
+    text ? h('div', { class: `card-text ${def.text.length > LONG_TEXT.character ? 'long' : ''}` }, def.text) : null,
   );
 }
 
